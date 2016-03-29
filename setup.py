@@ -30,7 +30,8 @@ setup(
     keywords='pushpad push notifications api',
     packages=find_packages(exclude=['contrib', 'docs', 'tests*']),
     install_requires=['requests'],
-    test_suite="tests",
+    tests_require=['mock', 'nose'],
+    test_suite='nose.collector',
     extras_require={
         'dev': ['check-manifest'],
         'test': ['coverage'],
