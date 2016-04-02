@@ -1,4 +1,4 @@
-# Pushpad: real push notifications for websites
+# Pushpad - Web Push Notifications
 
 Add native push notifications to your web app using [Pushpad](https://pushpad.xyz).
 
@@ -34,15 +34,16 @@ import pushpad
 project = pushpad.Pushpad(auth_token='5374d7dfeffa2eb49965624ba7596a09', project_id=123)
 ```
 
-`auth_token` can be found in the user account settings. 
+- `auth_token` can be found in the user account settings. 
+- `project_id` can be found in the project settings.
 
-`project_id` can be found in the project settings on Pushpad. A project is a list of subscriptions. 
+## Collecting user subscriptions to push notifications
 
-## Collecting user subscriptions
+Pushpad offers two different ways to collect subscriptions. [Learn more](https://pushpad.xyz/docs#simple_vs_custom_api_docs)
 
 ### Custom API
 
-Read the [docs](https://pushpad.xyz/docs#custom_api_docs).
+Choose the Custom API if you want to use Javascript for a seamless integration. [Read the docs](https://pushpad.xyz/docs#custom_api_docs)
 
 If you need to generate the HMAC signature for the `uid` you can use this helper:
 
@@ -52,7 +53,7 @@ project.signature_for(current_user_id)
 
 ### Simple API
 
-Let users subscribe to your push notifications: 
+Add a link to let users subscribe to push notifications:
 
 ```python
 '<a href="{url}">Subscribe anonymous to push notifications</a>'.format(
@@ -68,9 +69,7 @@ Let users subscribe to your push notifications:
 
 When a user clicks the link is sent to Pushpad, automatically asked to receive push notifications and redirected back to your website.
 
-## Sending notifications
-
-After you have collected the user subscriptions you can send them push notifications:
+## Sending push notifications
 
 ```python
 import pushpad
@@ -83,18 +82,20 @@ notification = pushpad.Notification(
     target_url="http://example.com"  # optional, defaults to your project website
 )
 
-# deliver to user
+# deliver to a user
 notification.deliver_to(user_id)
-# deliver to users list
+
+# deliver to a group of users
 notification.deliver_to((user1_id, user2_id, user3_id))
+
 # deliver to everyone
 notification.broadcast()
 ```
 
 If no user with that id has subscribed to push notifications, that id is simply ignored.
 
-The methods above return an dict(): `res['scheduled']` contains the number of notifications that will be sent. For example if you call `notification.deliver_to(user)` but the user has never subscribed to push notifications the result will be `{'scheduled': 0}`.
+The methods above return a dictionary: `'scheduled'` is the number of devices to which the notification will be sent.
 
 ## License
 
-The gem is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
+The library is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
