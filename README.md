@@ -77,8 +77,8 @@ import pushpad
 project = pushpad.Pushpad(auth_token='5374d7dfeffa2eb49965624ba7596a09', project_id=123)
 notification = pushpad.Notification(
     project,
-    body="Hello world!",
-    title="Website Name", # optional, defaults to your project name
+    body="Hello world!", # max 90 characters
+    title="Website Name", # optional, defaults to your project name, max 30 characters
     target_url="http://example.com"  # optional, defaults to your project website
 )
 
