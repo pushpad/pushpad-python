@@ -18,7 +18,7 @@ class Notification(object):
             'Accept': 'application/json',
         }
 
-    def _req_body(self, uids=[]):
+    def _req_body(self, uids=None, tags=None):
         res = {
             'notification': {
                 'body': self._body,
@@ -28,6 +28,8 @@ class Notification(object):
         }
         if uids:
             res.update({'uids': uids})
+        if tags:
+            res.update({'tags': tags})
         return res
 
     def _deliver(self, req_body):
@@ -40,10 +42,10 @@ class Notification(object):
             raise pushpad.NotificationDeliveryError('Response %s: %s' %(response.status_code, response.text))
         return response.json()
 
-    def broadcast(self):
-        return self._deliver(self._req_body())
+    def broadcast(self, tags=None):
+        return self._deliver(self._req_body(None, tags))
 
-    def deliver_to(self, uids):
+    def deliver_to(self, uids, tags=None):
         return self._deliver(
-            req_body=self._req_body(uids)
+            req_body=self._req_body(uids, tags)
         )

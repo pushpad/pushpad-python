@@ -88,6 +88,13 @@ notification.deliver_to(user_id)
 # deliver to a group of users
 notification.deliver_to((user1_id, user2_id, user3_id))
 
+# deliver to some users only if they have a given preference
+# e.g. only the listed users who have also a interested in "events" will be reached
+notification.deliver_to((user1_id, user2_id, user3_id), tags=['events'])
+
+# deliver to segments
+notification.broadcast(tags=['segment1', 'segment2'])
+
 # deliver to everyone
 notification.broadcast()
 ```
