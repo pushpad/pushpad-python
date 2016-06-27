@@ -1,6 +1,6 @@
-# Pushpad - Web Push Notifications
-
-Add native push notifications to your web app using [Pushpad](https://pushpad.xyz).
+# Pushpad - Web Push Notifications Service
+ 
+[Pushpad](https://pushpad.xyz) is a service for sending push notifications from your web app. It supports the **Push API** (Chrome and Firefox) and **APNs** (Safari).
 
 Features:
 
@@ -53,13 +53,14 @@ project.signature_for(current_user_id)
 
 ### Pushpad Express
 
-Add a link to let users subscribe to push notifications:
+If you want to use Pushpad Express, add a link to your website to let users subscribe to push notifications: 
 
 ```python
 '<a href="{url}">Subscribe anonymous to push notifications</a>'.format(
     url=project.path()
 )
 
+# If the user is logged in on your website you should track its user id to target him in the future
 '<a href="{url}">Subscribe current user to push notifications</a>'.format(
     url=project.path_for(current_user_id)
 )
@@ -67,7 +68,7 @@ Add a link to let users subscribe to push notifications:
 
 `current_user_id` is an identifier (e.g. primary key in the database) of the user currently logged in on your website.
 
-When a user clicks the link is sent to Pushpad, automatically asked to receive push notifications and redirected back to your website.
+When a user clicks the link is sent to Pushpad, asked to receive push notifications and redirected back to your website.
 
 ## Sending push notifications
 
