@@ -56,12 +56,12 @@ project.signature_for(current_user_id)
 If you want to use Pushpad Express, add a link to your website to let users subscribe to push notifications: 
 
 ```python
-'<a href="{url}">Subscribe anonymous to push notifications</a>'.format(
+'<a href="{url}">Push notifications</a>'.format(
     url=project.path()
 )
 
 # If the user is logged in on your website you should track its user id to target him in the future
-'<a href="{url}">Subscribe current user to push notifications</a>'.format(
+'<a href="{url}">Push notifications</a>'.format(
     url=project.path_for(current_user_id)
 )
 ```
