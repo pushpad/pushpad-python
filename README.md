@@ -106,6 +106,7 @@ If no user with that id has subscribed to push notifications, that id is simply 
 
 The methods above return a dictionary: 
 
+- `'id'` is the id of the notification on Pushpad
 - `'scheduled'` is the number of devices to which the notification will be sent
 - `'uids'` (`deliver_to` only) are the user IDs that will be actually reached by the notification (unless they have unsubscribed since the last notification)
 
