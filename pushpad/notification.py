@@ -5,11 +5,13 @@ import pushpad
 
 
 class Notification(object):
-    def __init__(self, project, body=None, title=None, target_url=None):
+    def __init__(self, project, body=None, title=None, target_url=None, icon_url=None, ttl=None):
         self._project = project
         self._body = body
         self._title = title
         self._target_url = target_url
+        self._icon_url = icon_url
+        self._ttl = ttl
 
     def _req_headers(self):
         return {
@@ -22,14 +24,20 @@ class Notification(object):
         res = {
             'notification': {
                 'body': self._body,
-                'title': self._title,
-                'target_url': self._target_url,
             }
         }
+        if self._title:
+            res['notification']['title'] = self._title
+        if self._target_url:
+            res['notification']['target_url'] = self._target_url
+        if self._icon_url:
+            res['notification']['icon_url'] = self._icon_url
+        if self._ttl:
+            res['notification']['ttl'] = self._ttl
         if uids:
-            res.update({'uids': uids})
+            res['uids'] = uids
         if tags:
-            res.update({'tags': tags})
+            res['tags'] = tags
         return res
 
     def _deliver(self, req_body):

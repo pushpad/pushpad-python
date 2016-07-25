@@ -65,6 +65,30 @@ class TestNotification(unittest.TestCase):
             "http://example.com"
         )
 
+    def test_set_icon_url(self):
+        """ can change icon_url """
+        notification = pushpad.Notification(
+            self._project,
+            body="Hello world!",
+            icon_url="http://example.com/assets/icon.png"
+        )
+        self.assertEqual(
+            notification._icon_url,
+            "http://example.com/assets/icon.png"
+        )
+
+    def test_set_ttl(self):
+        """ can change ttl """
+        notification = pushpad.Notification(
+            self._project,
+            body="Hello world!",
+            ttl=600
+        )
+        self.assertEqual(
+            notification._ttl,
+            600
+        )
+
     def test_req_headers(self):
         headers = {
             'Authorization': 'Token token="5374d7dfeffa2eb49965624ba7596a09"',
@@ -141,6 +165,30 @@ class TestNotification(unittest.TestCase):
 
         self.assertDictEqual(
             notification._req_body('user1'),
+            body
+        )
+
+    def test_req_body_with_optional_fields(self):
+        body = {
+            'notification': {
+                'body': 'Hello world!',
+                'title': 'Website Name',
+                'target_url': 'http://example.com',
+                'icon_url': 'http://example.com/assets/icon.png',
+                'ttl': 600
+            }
+        }
+        notification = pushpad.Notification(
+            self._project,
+            body="Hello world!",
+            title="Website Name",
+            target_url="http://example.com",
+            icon_url='http://example.com/assets/icon.png',
+            ttl=600
+        )
+
+        self.assertDictEqual(
+            notification._req_body(),
             body
         )
 
