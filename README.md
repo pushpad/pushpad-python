@@ -78,7 +78,7 @@ import pushpad
 project = pushpad.Pushpad(auth_token='5374d7dfeffa2eb49965624ba7596a09', project_id=123)
 notification = pushpad.Notification(
     project,
-    body="Hello world!", # max 90 characters
+    body="Hello world!", # max 120 characters
     title="Website Name", # optional, defaults to your project name, max 30 characters
     target_url="http://example.com",  # optional, defaults to your project website
     icon_url="http://example.com/assets/icon.png", # optional, defaults to the project icon
@@ -96,6 +96,7 @@ notification.deliver_to((user1_id, user2_id, user3_id))
 notification.deliver_to((user1_id, user2_id, user3_id), tags=['events'])
 
 # deliver to segments
+# e.g. any subscriber that has the tag "segment1" OR "segment2"
 notification.broadcast(tags=['segment1', 'segment2'])
 
 # deliver to everyone
@@ -107,8 +108,8 @@ If no user with that id has subscribed to push notifications, that id is simply 
 The methods above return a dictionary: 
 
 - `'id'` is the id of the notification on Pushpad
-- `'scheduled'` is the number of devices to which the notification will be sent
-- `'uids'` (`deliver_to` only) are the user IDs that will be actually reached by the notification (unless they have unsubscribed since the last notification)
+- `'scheduled'` is the estimated reach of the notification (i.e. the number of devices to which the notification will be sent, which can be different from the number of users, since a user may receive notifications on multiple devices)
+- `'uids'` (`deliver_to` only) are the user IDs that will be actually reached by the notification because they are subscribed to your notifications. For example if you send a notification to `['uid1', 'uid2', 'uid3']`, but only `'uid1'` is subscribed, you will get `['uid1']` in response. Note that if a user has unsubscribed after the last notification sent to him, he may still be reported for one time as subscribed (this is due to the way the W3C Push API works).
 
 ## License
 
