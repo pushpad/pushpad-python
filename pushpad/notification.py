@@ -34,9 +34,9 @@ class Notification(object):
             res['notification']['icon_url'] = self._icon_url
         if self._ttl:
             res['notification']['ttl'] = self._ttl
-        if uids:
+        if uids != None:
             res['uids'] = uids
-        if tags:
+        if tags != None:
             res['tags'] = tags
         return res
 
@@ -54,6 +54,8 @@ class Notification(object):
         return self._deliver(self._req_body(None, tags))
 
     def deliver_to(self, uids, tags=None):
+        if not uids:
+            uids = [] # prevent broadcasting
         return self._deliver(
             req_body=self._req_body(uids, tags)
         )

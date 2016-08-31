@@ -275,3 +275,30 @@ class TestNotification(unittest.TestCase):
             }
         )
 
+    @mock.patch('requests.post')
+    def test_deliver_to_never_broadcasts(self, req_post_mock):
+        notification = pushpad.Notification(
+            self._project,
+            body="Hello world!"
+        )
+
+        mock_response = mock.Mock()
+        mock_response.status_code = 201
+        mock_response.json.return_value = {u'scheduled': 0}
+        req_post_mock.return_value = mock_response
+
+        notification.deliver_to(None)
+        req_post_mock.assert_called_once_with(
+            'https://pushpad.xyz/projects/123/notifications',
+            headers={
+                'Content-Type': 'application/json;charset=UTF-8',
+                'Accept': 'application/json',
+                'Authorization': 'Token token="5374d7dfeffa2eb49965624ba7596a09"'
+            },
+            json={
+                'notification': {
+                    'body': 'Hello world!'
+                },
+                'uids': []
+            }
+        )
