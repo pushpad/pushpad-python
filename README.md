@@ -1,4 +1,6 @@
 # Pushpad - Web Push Notifications Service
+
+[![Build Status](https://travis-ci.org/pushpad/pushpad-python.svg?branch=master)](https://travis-ci.org/pushpad/pushpad-python)
  
 [Pushpad](https://pushpad.xyz) is a service for sending push notifications from your web app. It supports the **Push API** (Chrome, Firefox, Opera) and **APNs** (Safari).
 
