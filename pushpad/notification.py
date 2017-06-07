@@ -5,13 +5,18 @@ import pushpad
 
 
 class Notification(object):
-    def __init__(self, project, body=None, title=None, target_url=None, icon_url=None, ttl=None):
+    def __init__(self, project, body=None, title=None, target_url=None, icon_url=None, ttl=None, require_interaction=None, image_url=None, custom_data=None, actions=None, starred=None):
         self._project = project
         self._body = body
         self._title = title
         self._target_url = target_url
         self._icon_url = icon_url
         self._ttl = ttl
+        self._require_interaction = require_interaction
+        self._image_url = image_url
+        self._custom_data = custom_data
+        self._actions = actions
+        self._starred = starred
 
     def _req_headers(self):
         return {
@@ -34,6 +39,17 @@ class Notification(object):
             res['notification']['icon_url'] = self._icon_url
         if self._ttl:
             res['notification']['ttl'] = self._ttl
+        if self._require_interaction is not None:
+            res['notification']['require_interaction'] = self._require_interaction
+        if self._image_url:
+            res['notification']['image_url'] = self._image_url
+        if self._custom_data:
+            res['notification']['custom_data'] = self._custom_data
+        if self._actions:
+            res['notification']['actions'] = self._actions
+        if self._starred is not None:
+            res['notification']['starred'] = self._starred
+
         if uids != None:
             res['uids'] = uids
         if tags != None:

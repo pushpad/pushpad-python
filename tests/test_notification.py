@@ -16,78 +16,47 @@ class TestNotification(unittest.TestCase):
     _project = pushpad.Pushpad(_test_token, _test_project_id)
 
     def test_instantiate(self):
-        """ notification can be instantiated"""
-
+        self.assertIsNotNone(
+            pushpad.Notification(self._project, body="Hello world!")
+        )
         notification = pushpad.Notification(
             self._project,
             body="Hello world!",
             title="Website Name",
-            target_url="http://example.com"
+            target_url="http://example.com",
+            icon_url="http://example.com/assets/icon.png",
+            ttl=604800,
+            require_interaction=True,
+            image_url="http://example.com/assets/image.png",
+            custom_data="123",
+            actions=(
+                {
+                    'title': "My Button 1",
+                    'target_url': "http://example.com/button-link",
+                    'icon': "http://example.com/assets/button-icon.png",
+                    'action': "myActionName"
+                },
+            ),
+            starred=True
         )
         self.assertIsNotNone(notification)
-
-    def test_set_body(self):
-        """ can change body """
-        notification = pushpad.Notification(
-            self._project,
-            body="Hello world!",
-            title="Website Name",
-            target_url="http://example.com"
-        )
-        self.assertEqual(
-            notification._body,
-            "Hello world!"
-        )
-
-    def test_set_title(self):
-        """ can change title """
-        notification = pushpad.Notification(
-            self._project,
-            body="Hello world!",
-            title="Website Name",
-            target_url="http://example.com"
-        )
-        self.assertEqual(
-            notification._title,
-            "Website Name"
-        )
-
-    def test_set_target_url(self):
-        """ can change target_url """
-        notification = pushpad.Notification(
-            self._project,
-            body="Hello world!",
-            title="Website Name",
-            target_url="http://example.com"
-        )
-        self.assertEqual(
-            notification._target_url,
-            "http://example.com"
-        )
-
-    def test_set_icon_url(self):
-        """ can change icon_url """
-        notification = pushpad.Notification(
-            self._project,
-            body="Hello world!",
-            icon_url="http://example.com/assets/icon.png"
-        )
-        self.assertEqual(
-            notification._icon_url,
-            "http://example.com/assets/icon.png"
-        )
-
-    def test_set_ttl(self):
-        """ can change ttl """
-        notification = pushpad.Notification(
-            self._project,
-            body="Hello world!",
-            ttl=600
-        )
-        self.assertEqual(
-            notification._ttl,
-            600
-        )
+        self.assertEqual(notification._body, "Hello world!")
+        self.assertEqual(notification._title, "Website Name")
+        self.assertEqual(notification._target_url, "http://example.com")
+        self.assertEqual(notification._icon_url, "http://example.com/assets/icon.png")
+        self.assertEqual(notification._ttl, 604800)
+        self.assertEqual(notification._require_interaction, True)
+        self.assertEqual(notification._image_url, "http://example.com/assets/image.png")
+        self.assertEqual(notification._custom_data, "123")
+        self.assertEqual(notification._actions, (
+            {
+                'title': "My Button 1",
+                'target_url': "http://example.com/button-link",
+                'icon': "http://example.com/assets/button-icon.png",
+                'action': "myActionName"
+            },
+        ))
+        self.assertEqual(notification._starred, True)
 
     def test_req_headers(self):
         headers = {
@@ -97,75 +66,11 @@ class TestNotification(unittest.TestCase):
         }
         notification = pushpad.Notification(
             self._project,
-            body="Hello world!",
-            title="Website Name",
-            target_url="http://example.com"
+            body="Hello world!"
         )
         self.assertDictEqual(
             notification._req_headers(),
             headers
-        )
-
-    def test_req_body_all(self):
-        body = {
-            'notification': {
-                'body': 'Hello world!',
-                'title': 'Website Name',
-                'target_url': 'http://example.com',
-            }
-        }
-        notification = pushpad.Notification(
-            self._project,
-            body="Hello world!",
-            title="Website Name",
-            target_url="http://example.com"
-        )
-
-        self.assertDictEqual(
-            notification._req_body(),
-            body
-        )
-
-    def test_req_body_list(self):
-        body = {
-            'notification': {
-                'body': 'Hello world!',
-                'title': 'Website Name',
-                'target_url': 'http://example.com',
-            },
-            'uids': ('user1', 'user2', 'user3')
-        }
-        notification = pushpad.Notification(
-            self._project,
-            body="Hello world!",
-            title="Website Name",
-            target_url="http://example.com"
-        )
-
-        self.assertDictEqual(
-            notification._req_body(('user1', 'user2', 'user3')),
-            body
-        )
-
-    def test_req_body_single(self):
-        body = {
-            'notification': {
-                'body': 'Hello world!',
-                'title': 'Website Name',
-                'target_url': 'http://example.com',
-            },
-            'uids': 'user1'
-        }
-        notification = pushpad.Notification(
-            self._project,
-            body="Hello world!",
-            title="Website Name",
-            target_url="http://example.com"
-        )
-
-        self.assertDictEqual(
-            notification._req_body('user1'),
-            body
         )
 
     def test_req_body_with_optional_fields(self):
@@ -175,7 +80,19 @@ class TestNotification(unittest.TestCase):
                 'title': 'Website Name',
                 'target_url': 'http://example.com',
                 'icon_url': 'http://example.com/assets/icon.png',
-                'ttl': 600
+                'ttl': 604800,
+                'require_interaction': True,
+                'image_url': 'http://example.com/assets/image.png',
+                'custom_data': '123',
+                'actions': (
+                  {
+                    'title': 'My Button 1',
+                    'target_url': 'http://example.com/button-link',
+                    'icon': 'http://example.com/assets/button-icon.png',
+                    'action': 'myActionName'
+                  },
+                ),
+                'starred': True
             }
         }
         notification = pushpad.Notification(
@@ -183,12 +100,55 @@ class TestNotification(unittest.TestCase):
             body="Hello world!",
             title="Website Name",
             target_url="http://example.com",
-            icon_url='http://example.com/assets/icon.png',
-            ttl=600
+            icon_url="http://example.com/assets/icon.png",
+            ttl=604800,
+            require_interaction=True,
+            image_url="http://example.com/assets/image.png",
+            custom_data="123",
+            actions=(
+                {
+                    'title': "My Button 1",
+                    'target_url': "http://example.com/button-link",
+                    'icon': "http://example.com/assets/button-icon.png",
+                    'action': "myActionName"
+                },
+            ),
+            starred=True
         )
-
         self.assertDictEqual(
             notification._req_body(),
+            body
+        )
+
+    def test_req_body_uids(self):
+        body = {
+            'notification': {
+                'body': 'Hello world!'
+            },
+            'uids': ('user1', 'user2', 'user3')
+        }
+        notification = pushpad.Notification(
+            self._project,
+            body="Hello world!"
+        )
+        self.assertDictEqual(
+            notification._req_body(('user1', 'user2', 'user3')),
+            body
+        )
+
+    def test_req_body_single(self):
+        body = {
+            'notification': {
+                'body': 'Hello world!'
+            },
+            'uids': 'user1'
+        }
+        notification = pushpad.Notification(
+            self._project,
+            body="Hello world!"
+        )
+        self.assertDictEqual(
+            notification._req_body('user1'),
             body
         )
 
