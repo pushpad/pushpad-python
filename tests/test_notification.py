@@ -136,7 +136,7 @@ class TestNotification(unittest.TestCase):
             body
         )
 
-    def test_req_body_single(self):
+    def test_req_body_uid(self):
         body = {
             'notification': {
                 'body': 'Hello world!'
@@ -149,6 +149,38 @@ class TestNotification(unittest.TestCase):
         )
         self.assertDictEqual(
             notification._req_body('user1'),
+            body
+        )
+
+    def test_req_body_tags(self):
+        body = {
+            'notification': {
+                'body': 'Hello world!'
+            },
+            'tags': ('tag1', 'tag2')
+        }
+        notification = pushpad.Notification(
+            self._project,
+            body="Hello world!"
+        )
+        self.assertDictEqual(
+            notification._req_body(tags=('tag1', 'tag2')),
+            body
+        )
+
+    def test_req_body_tag(self):
+        body = {
+            'notification': {
+                'body': 'Hello world!'
+            },
+            'tags': 'tag1'
+        }
+        notification = pushpad.Notification(
+            self._project,
+            body="Hello world!"
+        )
+        self.assertDictEqual(
+            notification._req_body(tags='tag1'),
             body
         )
 
@@ -215,6 +247,22 @@ class TestNotification(unittest.TestCase):
         )
 
     @mock.patch('pushpad.Notification._deliver')
+    def test_broadcast_with_tags(self, deliver_mock):
+        notification = pushpad.Notification(
+            self._project,
+            body="Hello world!"
+        )
+        notification.broadcast(tags=('tag1', 'tag2'))
+        deliver_mock.assert_called_once_with(
+            {
+                'notification': {
+                    'body': 'Hello world!'
+                },
+                'tags': ('tag1', 'tag2')
+            }
+        )
+
+    @mock.patch('pushpad.Notification._deliver')
     def test_deliver_to(self, deliver_mock):
         notification = pushpad.Notification(
             self._project,
@@ -232,6 +280,23 @@ class TestNotification(unittest.TestCase):
                     'title': 'Website Name'
                 },
                 'uids': 'user1'
+            }
+        )
+
+    @mock.patch('pushpad.Notification._deliver')
+    def test_deliver_to_with_tags(self, deliver_mock):
+        notification = pushpad.Notification(
+            self._project,
+            body="Hello world!"
+        )
+        notification.deliver_to(('user1', 'user2'), tags=('tag1', 'tag2'))
+        deliver_mock.assert_called_once_with(
+            req_body={
+                'notification': {
+                    'body': 'Hello world!'
+                },
+                'uids': ('user1', 'user2'),
+                'tags': ('tag1', 'tag2')
             }
         )
 
