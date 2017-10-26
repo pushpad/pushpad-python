@@ -3,6 +3,7 @@ from __future__ import absolute_import
 import unittest
 import pushpad
 import requests
+import datetime
 try:
     import mock
 except ImportError:
@@ -37,7 +38,8 @@ class TestNotification(unittest.TestCase):
                     'action': "myActionName"
                 },
             ),
-            starred=True
+            starred=True,
+            send_at=datetime.datetime(2016, 7, 25, 10, 9, 0, 0)
         )
         self.assertIsNotNone(notification)
         self.assertEqual(notification._body, "Hello world!")
@@ -57,6 +59,7 @@ class TestNotification(unittest.TestCase):
             },
         ))
         self.assertEqual(notification._starred, True)
+        self.assertEqual(notification._send_at, datetime.datetime(2016, 7, 25, 10, 9, 0, 0))
 
     def test_req_headers(self):
         headers = {
@@ -92,7 +95,8 @@ class TestNotification(unittest.TestCase):
                     'action': 'myActionName'
                   },
                 ),
-                'starred': True
+                'starred': True,
+                'send_at': '2016-07-25T10:09'
             }
         }
         notification = pushpad.Notification(
@@ -113,7 +117,8 @@ class TestNotification(unittest.TestCase):
                     'action': "myActionName"
                 },
             ),
-            starred=True
+            starred=True,
+            send_at=datetime.datetime(2016, 7, 25, 10, 9, 0, 0)
         )
         self.assertDictEqual(
             notification._req_body(),

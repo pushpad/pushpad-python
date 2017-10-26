@@ -12,7 +12,7 @@ here = path.abspath(path.dirname(__file__))
 
 setup(
     name='pushpad',
-    version='0.4.0',
+    version='0.5.0',
     description='Pushpad: real push notifications for websites',
     url='https://pushpad.xyz',
     author='Pushpad',
@@ -27,7 +27,7 @@ setup(
         "Programming Language :: Python :: 2",
         "Programming Language :: Python :: 3",
     ],
-    keywords='pushpad push notifications api',
+    keywords='pushpad web push notifications api',
     packages=find_packages(exclude=['contrib', 'docs', 'tests*']),
     install_requires=['requests'],
     tests_require=['mock', 'nose'],
