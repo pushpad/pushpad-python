@@ -30,6 +30,7 @@ class TestNotification(unittest.TestCase):
             require_interaction=True,
             image_url="http://example.com/assets/image.png",
             custom_data="123",
+            custom_metrics=('examples', 'another_metric'),
             actions=(
                 {
                     'title': "My Button 1",
@@ -50,6 +51,7 @@ class TestNotification(unittest.TestCase):
         self.assertEqual(notification._require_interaction, True)
         self.assertEqual(notification._image_url, "http://example.com/assets/image.png")
         self.assertEqual(notification._custom_data, "123")
+        self.assertEqual(notification._custom_metrics, ('examples', 'another_metric'))
         self.assertEqual(notification._actions, (
             {
                 'title': "My Button 1",
@@ -87,6 +89,7 @@ class TestNotification(unittest.TestCase):
                 'require_interaction': True,
                 'image_url': 'http://example.com/assets/image.png',
                 'custom_data': '123',
+                'custom_metrics': ('examples', 'another_metric'),
                 'actions': (
                   {
                     'title': 'My Button 1',
@@ -109,6 +112,7 @@ class TestNotification(unittest.TestCase):
             require_interaction=True,
             image_url="http://example.com/assets/image.png",
             custom_data="123",
+            custom_metrics=('examples', 'another_metric'),
             actions=(
                 {
                     'title': "My Button 1",
