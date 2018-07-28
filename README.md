@@ -15,7 +15,7 @@ Features:
 Use [pip](http://pip-installer.org/) or easy_install:
 
 ```bash
-pip install pushpad-python
+pip install pushpad
 ```
 
 ## Getting started
