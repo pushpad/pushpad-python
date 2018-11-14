@@ -14,8 +14,6 @@ PROJ_ID=123
 project = pushpad.Pushpad(TOKEN, PROJ_ID)
 
 print("HMAC signature for the uid: %s is: %s" %(user1, project.signature_for(user1)))
-print("Subscribe anonymous to push notifications: %s" %(project.path()))
-print("Subscribe current user: %s to push notifications: %s" %(user1, project.path_for(user1)))
 
 notification = pushpad.Notification(
     project,

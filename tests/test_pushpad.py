@@ -30,19 +30,3 @@ class TestPushpad(unittest.TestCase):
 
         project = pushpad.Pushpad(self._test_token, self._test_project_id)
         self.assertEqual(project.signature_for(data), data_sha1)
-
-    def test_get_path(self):
-        project = pushpad.Pushpad(self._test_token, self._test_project_id)
-
-        self.assertEqual(
-            project.path(),
-            "https://pushpad.xyz/projects/123/subscription/edit"
-        )
-
-    def test_path_for(self):
-        project = pushpad.Pushpad(self._test_token, self._test_project_id)
-
-        self.assertEqual(
-            project.path_for('testuser1234'),
-            "https://pushpad.xyz/projects/123/subscription/edit?uid=testuser1234&uid_signature=f1c94d68e25af9f8f818f7016b78934fec99d4c9"
-        )
