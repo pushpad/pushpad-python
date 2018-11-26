@@ -12,7 +12,7 @@ here = path.abspath(path.dirname(__file__))
 
 setup(
     name='pushpad',
-    version='0.7.0',
+    version='0.8.0',
     description='Pushpad: real push notifications for websites',
     url='https://pushpad.xyz',
     author='Pushpad',
