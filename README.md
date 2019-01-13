@@ -51,8 +51,8 @@ import pushpad
 project = pushpad.Pushpad(auth_token='5374d7dfeffa2eb49965624ba7596a09', project_id=123)
 notification = pushpad.Notification(
     project,
-    body="Hello world!", # max 120 characters
-    title="Website Name", # optional, defaults to your project name, max 30 characters
+    body="Hello world!",
+    title="Website Name", # optional, defaults to your project name
     target_url="http://example.com",  # optional, defaults to your project website
     icon_url="http://example.com/assets/icon.png", # optional, defaults to the project icon
     ttl=604800, # optional, drop the notification after this number of seconds if a device is offline
@@ -64,7 +64,7 @@ notification = pushpad.Notification(
     # see https://pushpad.xyz/docs/action_buttons
     actions=(
       {
-        'title': "My Button 1", # max length is 20 characters
+        'title': "My Button 1",
         'target_url': "http://example.com/button-link", # optional
         'icon': "http://example.com/assets/button-icon.png", # optional
         'action': "myActionName" # optional
