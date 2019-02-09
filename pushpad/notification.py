@@ -67,7 +67,7 @@ class Notification(object):
 
     def _deliver(self, req_body):
         response = requests.post(
-            'https://pushpad.xyz/projects/%s/notifications' % self._project.project_id,
+            'https://pushpad.xyz/api/v1/projects/%s/notifications' % self._project.project_id,
             headers=self._req_headers(),
             json=req_body,
         )

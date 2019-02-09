@@ -223,7 +223,7 @@ class TestNotification(unittest.TestCase):
 
         notification._deliver(body)
         req_post_mock.assert_called_once_with(
-            'https://pushpad.xyz/projects/123/notifications',
+            'https://pushpad.xyz/api/v1/projects/123/notifications',
             headers={
                 'Content-Type': 'application/json;charset=UTF-8',
                 'Accept': 'application/json',
@@ -327,7 +327,7 @@ class TestNotification(unittest.TestCase):
 
         notification.deliver_to(None)
         req_post_mock.assert_called_once_with(
-            'https://pushpad.xyz/projects/123/notifications',
+            'https://pushpad.xyz/api/v1/projects/123/notifications',
             headers={
                 'Content-Type': 'application/json;charset=UTF-8',
                 'Accept': 'application/json',
