@@ -53,20 +53,20 @@ notification = pushpad.Notification(
     project,
     body="Hello world!",
     title="Website Name", # optional, defaults to your project name
-    target_url="http://example.com",  # optional, defaults to your project website
-    icon_url="http://example.com/assets/icon.png", # optional, defaults to the project icon
+    target_url="https://example.com",  # optional, defaults to your project website
+    icon_url="https://example.com/assets/icon.png", # optional, defaults to the project icon
     ttl=604800, # optional, drop the notification after this number of seconds if a device is offline
     require_interaction=True, # optional, prevent Chrome on desktop from automatically closing the notification after a few seconds
     urgent=False, # optional, enable this option only for time-sensitive alerts (e.g. incoming phone call)
-    image_url="http://example.com/assets/image.png", # optional, an image to display in the notification content
+    image_url="https://example.com/assets/image.png", # optional, an image to display in the notification content
     custom_data="123", # optional, a string that is passed as an argument to action button callbacks
     # optional, add some action buttons to the notification
     # see https://pushpad.xyz/docs/action_buttons
     actions=(
       {
         'title': "My Button 1",
-        'target_url': "http://example.com/button-link", # optional
-        'icon': "http://example.com/assets/button-icon.png", # optional
+        'target_url': "https://example.com/button-link", # optional
+        'icon': "https://example.com/assets/button-icon.png", # optional
         'action': "myActionName" # optional
       },
     ),

@@ -24,19 +24,19 @@ class TestNotification(unittest.TestCase):
             self._project,
             body="Hello world!",
             title="Website Name",
-            target_url="http://example.com",
-            icon_url="http://example.com/assets/icon.png",
+            target_url="https://example.com",
+            icon_url="https://example.com/assets/icon.png",
             ttl=604800,
             require_interaction=True,
             urgent=True,
-            image_url="http://example.com/assets/image.png",
+            image_url="https://example.com/assets/image.png",
             custom_data="123",
             custom_metrics=('examples', 'another_metric'),
             actions=(
                 {
                     'title': "My Button 1",
-                    'target_url': "http://example.com/button-link",
-                    'icon': "http://example.com/assets/button-icon.png",
+                    'target_url': "https://example.com/button-link",
+                    'icon': "https://example.com/assets/button-icon.png",
                     'action': "myActionName"
                 },
             ),
@@ -46,19 +46,19 @@ class TestNotification(unittest.TestCase):
         self.assertIsNotNone(notification)
         self.assertEqual(notification._body, "Hello world!")
         self.assertEqual(notification._title, "Website Name")
-        self.assertEqual(notification._target_url, "http://example.com")
-        self.assertEqual(notification._icon_url, "http://example.com/assets/icon.png")
+        self.assertEqual(notification._target_url, "https://example.com")
+        self.assertEqual(notification._icon_url, "https://example.com/assets/icon.png")
         self.assertEqual(notification._ttl, 604800)
         self.assertEqual(notification._require_interaction, True)
         self.assertEqual(notification._urgent, True)
-        self.assertEqual(notification._image_url, "http://example.com/assets/image.png")
+        self.assertEqual(notification._image_url, "https://example.com/assets/image.png")
         self.assertEqual(notification._custom_data, "123")
         self.assertEqual(notification._custom_metrics, ('examples', 'another_metric'))
         self.assertEqual(notification._actions, (
             {
                 'title': "My Button 1",
-                'target_url': "http://example.com/button-link",
-                'icon': "http://example.com/assets/button-icon.png",
+                'target_url': "https://example.com/button-link",
+                'icon': "https://example.com/assets/button-icon.png",
                 'action': "myActionName"
             },
         ))
@@ -85,19 +85,19 @@ class TestNotification(unittest.TestCase):
             'notification': {
                 'body': 'Hello world!',
                 'title': 'Website Name',
-                'target_url': 'http://example.com',
-                'icon_url': 'http://example.com/assets/icon.png',
+                'target_url': 'https://example.com',
+                'icon_url': 'https://example.com/assets/icon.png',
                 'ttl': 604800,
                 'require_interaction': True,
                 'urgent': True,
-                'image_url': 'http://example.com/assets/image.png',
+                'image_url': 'https://example.com/assets/image.png',
                 'custom_data': '123',
                 'custom_metrics': ('examples', 'another_metric'),
                 'actions': (
                   {
                     'title': 'My Button 1',
-                    'target_url': 'http://example.com/button-link',
-                    'icon': 'http://example.com/assets/button-icon.png',
+                    'target_url': 'https://example.com/button-link',
+                    'icon': 'https://example.com/assets/button-icon.png',
                     'action': 'myActionName'
                   },
                 ),
@@ -109,19 +109,19 @@ class TestNotification(unittest.TestCase):
             self._project,
             body="Hello world!",
             title="Website Name",
-            target_url="http://example.com",
-            icon_url="http://example.com/assets/icon.png",
+            target_url="https://example.com",
+            icon_url="https://example.com/assets/icon.png",
             ttl=604800,
             require_interaction=True,
             urgent=True,
-            image_url="http://example.com/assets/image.png",
+            image_url="https://example.com/assets/image.png",
             custom_data="123",
             custom_metrics=('examples', 'another_metric'),
             actions=(
                 {
                     'title': "My Button 1",
-                    'target_url': "http://example.com/button-link",
-                    'icon': "http://example.com/assets/button-icon.png",
+                    'target_url': "https://example.com/button-link",
+                    'icon': "https://example.com/assets/button-icon.png",
                     'action': "myActionName"
                 },
             ),
@@ -203,7 +203,7 @@ class TestNotification(unittest.TestCase):
             'notification': {
                 'body': 'Hello world!',
                 'title': 'Website Name',
-                'target_url': 'http://example.com',
+                'target_url': 'https://example.com',
             },
             'uids': 'user1'
         }
@@ -218,7 +218,7 @@ class TestNotification(unittest.TestCase):
             self._project,
             body="Hello world!",
             title="Website Name",
-            target_url="http://example.com"
+            target_url="https://example.com"
         )
 
         notification._deliver(body)
@@ -232,7 +232,7 @@ class TestNotification(unittest.TestCase):
             json={
                 'notification': {
                     'body': 'Hello world!',
-                    'target_url': 'http://example.com',
+                    'target_url': 'https://example.com',
                     'title': 'Website Name'
                 },
                 'uids': 'user1'
@@ -245,7 +245,7 @@ class TestNotification(unittest.TestCase):
             self._project,
             body="Hello world!",
             title="Website Name",
-            target_url="http://example.com"
+            target_url="https://example.com"
         )
 
         notification.broadcast()
@@ -253,7 +253,7 @@ class TestNotification(unittest.TestCase):
             {
                 'notification': {
                     'title': 'Website Name',
-                    'target_url': 'http://example.com',
+                    'target_url': 'https://example.com',
                     'body': 'Hello world!'
                 }
             }
@@ -281,7 +281,7 @@ class TestNotification(unittest.TestCase):
             self._project,
             body="Hello world!",
             title="Website Name",
-            target_url="http://example.com"
+            target_url="https://example.com"
         )
 
         notification.deliver_to('user1')
@@ -289,7 +289,7 @@ class TestNotification(unittest.TestCase):
             req_body={
                 'notification': {
                     'body': 'Hello world!',
-                    'target_url':'http://example.com',
+                    'target_url':'https://example.com',
                     'title': 'Website Name'
                 },
                 'uids': 'user1'

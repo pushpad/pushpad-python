@@ -19,7 +19,7 @@ notification = pushpad.Notification(
     project,
     body="Hello world!",
     title="Website Name",
-    target_url="http://example.com"
+    target_url="https://example.com"
 )
 
 print("Send notification to user: %s\nResult: %s" % (user1, notification.deliver_to(user1)))
