@@ -28,6 +28,7 @@ class TestNotification(unittest.TestCase):
             icon_url="https://example.com/assets/icon.png",
             ttl=604800,
             require_interaction=True,
+            silent=True,
             urgent=True,
             image_url="https://example.com/assets/image.png",
             custom_data="123",
@@ -50,6 +51,7 @@ class TestNotification(unittest.TestCase):
         self.assertEqual(notification._icon_url, "https://example.com/assets/icon.png")
         self.assertEqual(notification._ttl, 604800)
         self.assertEqual(notification._require_interaction, True)
+        self.assertEqual(notification._silent, True)
         self.assertEqual(notification._urgent, True)
         self.assertEqual(notification._image_url, "https://example.com/assets/image.png")
         self.assertEqual(notification._custom_data, "123")
@@ -89,6 +91,7 @@ class TestNotification(unittest.TestCase):
                 'icon_url': 'https://example.com/assets/icon.png',
                 'ttl': 604800,
                 'require_interaction': True,
+                'silent': True,
                 'urgent': True,
                 'image_url': 'https://example.com/assets/image.png',
                 'custom_data': '123',
@@ -113,6 +116,7 @@ class TestNotification(unittest.TestCase):
             icon_url="https://example.com/assets/icon.png",
             ttl=604800,
             require_interaction=True,
+            silent=True,
             urgent=True,
             image_url="https://example.com/assets/image.png",
             custom_data="123",

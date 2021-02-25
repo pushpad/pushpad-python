@@ -57,6 +57,7 @@ notification = pushpad.Notification(
     icon_url="https://example.com/assets/icon.png", # optional, defaults to the project icon
     ttl=604800, # optional, drop the notification after this number of seconds if a device is offline
     require_interaction=True, # optional, prevent Chrome on desktop from automatically closing the notification after a few seconds
+    silent=False, # optional, enable this option if you want a mute notification without any sound
     urgent=False, # optional, enable this option only for time-sensitive alerts (e.g. incoming phone call)
     image_url="https://example.com/assets/image.png", # optional, an image to display in the notification content
     custom_data="123", # optional, a string that is passed as an argument to action button callbacks
