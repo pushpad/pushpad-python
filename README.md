@@ -55,6 +55,7 @@ notification = pushpad.Notification(
     title="Website Name", # optional, defaults to your project name
     target_url="https://example.com",  # optional, defaults to your project website
     icon_url="https://example.com/assets/icon.png", # optional, defaults to the project icon
+    badge_url="https://example.com/assets/badge.png", # optional, defaults to the project badge
     ttl=604800, # optional, drop the notification after this number of seconds if a device is offline
     require_interaction=True, # optional, prevent Chrome on desktop from automatically closing the notification after a few seconds
     silent=False, # optional, enable this option if you want a mute notification without any sound

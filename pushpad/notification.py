@@ -5,12 +5,13 @@ import pushpad
 
 
 class Notification(object):
-    def __init__(self, project, body=None, title=None, target_url=None, icon_url=None, ttl=None, require_interaction=None, silent=None, urgent=None, image_url=None, custom_data=None, custom_metrics=None, actions=None, starred=None, send_at=None):
+    def __init__(self, project, body=None, title=None, target_url=None, icon_url=None, badge_url=None, ttl=None, require_interaction=None, silent=None, urgent=None, image_url=None, custom_data=None, custom_metrics=None, actions=None, starred=None, send_at=None):
         self._project = project
         self._body = body
         self._title = title
         self._target_url = target_url
         self._icon_url = icon_url
+        self._badge_url = badge_url
         self._ttl = ttl
         self._require_interaction = require_interaction
         self._silent = silent
@@ -41,6 +42,8 @@ class Notification(object):
             res['notification']['target_url'] = self._target_url
         if self._icon_url:
             res['notification']['icon_url'] = self._icon_url
+        if self._badge_url:
+            res['notification']['badge_url'] = self._badge_url
         if self._ttl:
             res['notification']['ttl'] = self._ttl
         if self._require_interaction is not None:

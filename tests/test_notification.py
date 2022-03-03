@@ -26,6 +26,7 @@ class TestNotification(unittest.TestCase):
             title="Website Name",
             target_url="https://example.com",
             icon_url="https://example.com/assets/icon.png",
+            badge_url="https://example.com/assets/badge.png",
             ttl=604800,
             require_interaction=True,
             silent=True,
@@ -49,6 +50,7 @@ class TestNotification(unittest.TestCase):
         self.assertEqual(notification._title, "Website Name")
         self.assertEqual(notification._target_url, "https://example.com")
         self.assertEqual(notification._icon_url, "https://example.com/assets/icon.png")
+        self.assertEqual(notification._badge_url, "https://example.com/assets/badge.png")
         self.assertEqual(notification._ttl, 604800)
         self.assertEqual(notification._require_interaction, True)
         self.assertEqual(notification._silent, True)
@@ -89,6 +91,7 @@ class TestNotification(unittest.TestCase):
                 'title': 'Website Name',
                 'target_url': 'https://example.com',
                 'icon_url': 'https://example.com/assets/icon.png',
+                'badge_url': 'https://example.com/assets/badge.png',
                 'ttl': 604800,
                 'require_interaction': True,
                 'silent': True,
@@ -114,6 +117,7 @@ class TestNotification(unittest.TestCase):
             title="Website Name",
             target_url="https://example.com",
             icon_url="https://example.com/assets/icon.png",
+            badge_url="https://example.com/assets/badge.png",
             ttl=604800,
             require_interaction=True,
             silent=True,
