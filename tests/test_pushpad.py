@@ -25,8 +25,8 @@ class TestPushpad(unittest.TestCase):
         self.assertEqual(project.project_id, self._test_project_id)
 
     def test_get_signature(self):
-        data = "Lorem ipsum dolor sit amet, cu eam veniam verear blandit"
-        data_sha1 = "71b88a1cab4fa14794128debecae12f5c091f7fe"
+        data = "user12345"
+        data_sha1 = "6627820dab00a1971f2a6d3ff16a5ad8ba4048a02b2d402820afc61aefd0b69f"
 
         project = pushpad.Pushpad(self._test_token, self._test_project_id)
         self.assertEqual(project.signature_for(data), data_sha1)

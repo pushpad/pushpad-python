@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from hashlib import sha1
+from hashlib import sha256
 import hmac
 
 
@@ -9,4 +9,4 @@ class Pushpad(object):
         self.project_id = project_id
 
     def signature_for(self, data):
-        return hmac.new(bytes(self.auth_token.encode()), data.encode(), sha1).hexdigest()
+        return hmac.new(bytes(self.auth_token.encode()), data.encode(), sha256).hexdigest()
