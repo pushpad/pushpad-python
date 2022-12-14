@@ -2,13 +2,9 @@
 
 ![Build Status](https://github.com/pushpad/pushpad-python/workflows/CI/badge.svg)
  
-[Pushpad](https://pushpad.xyz) is a service for sending push notifications from your web app. It supports the **Push API** (Chrome, Firefox, Opera, Edge) and **APNs** (Safari desktop). iOS support is coming in 2023.
+[Pushpad](https://pushpad.xyz) is a service for sending push notifications from websites and web apps. It uses the **Push API**, which is a standard supported by all major browsers (Chrome, Firefox, Opera, Edge, Safari).
 
-Features:
-
-- notifications are delivered even when the user is not on your website
-- users don't need to install any app or plugin
-- you can target specific users or send bulk notifications
+The notifications are delivered in real time even when the users are not on your website and you can target specific users or send bulk notifications.
 
 ## Installation
 
