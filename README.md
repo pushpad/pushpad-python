@@ -45,19 +45,44 @@ project.signature_for(current_user_id)
 import pushpad
 
 project = pushpad.Pushpad(auth_token='5374d7dfeffa2eb49965624ba7596a09', project_id=123)
+
 notification = pushpad.Notification(
     project,
+
+    # required, the main content of the notification
     body="Hello world!",
-    title="Website Name", # optional, defaults to your project name
-    target_url="https://example.com",  # optional, defaults to your project website
-    icon_url="https://example.com/assets/icon.png", # optional, defaults to the project icon
-    badge_url="https://example.com/assets/badge.png", # optional, defaults to the project badge
-    ttl=604800, # optional, drop the notification after this number of seconds if a device is offline
-    require_interaction=True, # optional, prevent Chrome on desktop from automatically closing the notification after a few seconds
-    silent=False, # optional, enable this option if you want a mute notification without any sound
-    urgent=False, # optional, enable this option only for time-sensitive alerts (e.g. incoming phone call)
-    image_url="https://example.com/assets/image.png", # optional, an image to display in the notification content
-    custom_data="123", # optional, a string that is passed as an argument to action button callbacks
+
+    # optional, the title of the notification (defaults to your project name)
+    title="Website Name",
+
+    # optional, open this link on notification click (defaults to your project website)
+    target_url="https://example.com",
+
+    # optional, the icon of the notification (defaults to the project icon)
+    icon_url="https://example.com/assets/icon.png",
+
+    # optional, the small icon displayed in the status bar (defaults to the project badge)
+    badge_url="https://example.com/assets/badge.png",
+
+    # optional, drop the notification after this number of seconds if a device is offline
+    ttl=604800,
+
+    # optional, prevent Chrome on desktop from automatically closing the notification after a few seconds
+    require_interaction=True,
+
+    # optional, enable this option if you want a mute notification without any sound
+    silent=False,
+
+    # optional, enable this option only for time-sensitive alerts (e.g. incoming phone call)
+    urgent=False,
+
+    # optional, an image to display in the notification content
+    # see https://pushpad.xyz/docs/sending_images
+    image_url="https://example.com/assets/image.png",
+
+    # optional, a string that is passed as an argument to action button callbacks
+    custom_data="123",
+
     # optional, add some action buttons to the notification
     # see https://pushpad.xyz/docs/action_buttons
     actions=(
@@ -68,10 +93,14 @@ notification = pushpad.Notification(
         'action': "myActionName" # optional
       },
     ),
-    starred=True, # optional, bookmark the notification in the Pushpad dashboard (e.g. to highlight manual notifications)
+
+    # optional, bookmark the notification in the Pushpad dashboard (e.g. to highlight manual notifications)
+    starred=True,
+
     # optional, use this option only if you need to create scheduled notifications (max 5 days)
     # see https://pushpad.xyz/docs/schedule_notifications
     send_at=datetime.datetime(2016, 7, 25, 10, 9, 0, 0), # you need to import datetime and use UTC
+
     # optional, add the notification to custom categories for stats aggregation
     # see https://pushpad.xyz/docs/monitoring
     custom_metrics=('examples', 'another_metric') # up to 3 metrics per notification
