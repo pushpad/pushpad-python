@@ -120,8 +120,9 @@ notification.deliver_to((user1_id, user2_id, user3_id), tags=('events',))
 # e.g. any subscriber that has the tag "segment1" OR "segment2"
 notification.broadcast(tags=('segment1', 'segment2'))
 
-# you can use boolean expressions 
-# they must be in the disjunctive normal form (without parenthesis)
+# you can use boolean expressions
+# they can include parentheses and the operators !, &&, || (from highest to lowest precedence)
+# https://pushpad.xyz/docs/tags
 notification.broadcast(tags='zip_code:28865 && !optout:local_events || friend_of:Organizer123')
 notification.deliver_to((user1_id, user2_id), tags=('tag1 && tag2', 'tag3')) # equal to 'tag1 && tag2 || tag3'
 
