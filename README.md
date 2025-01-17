@@ -8,7 +8,7 @@ The notifications are delivered in real time even when the users are not on your
 
 ## Installation
 
-Use [pip](http://pip-installer.org/) or easy_install:
+Use [pip](http://pip-installer.org/):
 
 ```bash
 pip install pushpad
