@@ -23,7 +23,7 @@ Then set your authentication credentials and project:
 ```python
 import pushpad
 
-project = pushpad.Pushpad(auth_token='5374d7dfeffa2eb49965624ba7596a09', project_id=123)
+client = pushpad.Pushpad(auth_token='5374d7dfeffa2eb49965624ba7596a09', project_id=123)
 ```
 
 - `auth_token` can be found in the user account settings. 
@@ -36,19 +36,18 @@ You can subscribe the users to your notifications using the Javascript SDK, as d
 If you need to generate the HMAC signature for the `uid` you can use this helper:
 
 ```python
-project.signature_for(current_user_id)
+client.signature_for(current_user_id)
 ```
 
 ## Sending push notifications
 
 ```python
+import datetime
 import pushpad
 
-project = pushpad.Pushpad(auth_token='5374d7dfeffa2eb49965624ba7596a09', project_id=123)
+client = pushpad.Pushpad(auth_token='5374d7dfeffa2eb49965624ba7596a09', project_id=123)
 
-notification = pushpad.Notification(
-    project,
-
+result = client.notifications.create(
     # required, the main content of the notification
     body="Hello world!",
 
@@ -99,36 +98,32 @@ notification = pushpad.Notification(
 
     # optional, use this option only if you need to create scheduled notifications (max 5 days)
     # see https://pushpad.xyz/docs/schedule_notifications
-    send_at=datetime.datetime(2016, 7, 25, 10, 9, 0, 0), # you need to import datetime and use UTC
+    send_at=datetime.datetime(2016, 7, 25, 10, 9, 0, 0), # use UTC
 
     # optional, add the notification to custom categories for stats aggregation
     # see https://pushpad.xyz/docs/monitoring
-    custom_metrics=('examples', 'another_metric') # up to 3 metrics per notification
+    custom_metrics=('examples', 'another_metric'), # up to 3 metrics per notification
+
+    # target specific users (omit both uids and tags to broadcast)
+    uids=('user1', 'user2', 'user3'),
+
+    # target segments using tags or boolean expressions
+    tags=('segment1', 'segment2')
 )
 
-# deliver to a user
-notification.deliver_to(user_id)
+# Inspect the response
+print(result['id'], result['scheduled'])
 
-# deliver to a group of users
-notification.deliver_to((user1_id, user2_id, user3_id))
-
-# deliver to some users only if they have a given preference
-# e.g. only the listed users who have also a interested in "events" will be reached
-notification.deliver_to((user1_id, user2_id, user3_id), tags=('events',))
-
-# deliver to segments
-# e.g. any subscriber that has the tag "segment1" OR "segment2"
-notification.broadcast(tags=('segment1', 'segment2'))
-
-# you can use boolean expressions
-# they can include parentheses and the operators !, &&, || (from highest to lowest precedence)
-# https://pushpad.xyz/docs/tags
-notification.broadcast(tags='zip_code:28865 && !optout:local_events || friend_of:Organizer123')
-notification.deliver_to((user1_id, user2_id), tags=('tag1 && tag2', 'tag3')) # equal to 'tag1 && tag2 || tag3'
-
-# deliver to everyone
-notification.broadcast()
+# List, inspect, or cancel notifications
+client.notifications.all(page=1)
+client.notifications.get(result['id'])
+client.notifications.cancel(result['id'])
 ```
+
+Set `uids` to reach a list of user IDs, set `tags` to reach subscribers that match your segments
+(`tags` accepts boolean expressions using `!`, `&&`, and `||`). When both are present a user must
+match the uid filter *and* have at least one of the listed tags. When both are omitted the notification
+is broadcast to everyone.
 
 You can set the default values for most fields in the project settings. See also [the docs](https://pushpad.xyz/docs/rest_api#notifications_api_docs) for more information about notification fields.
 
@@ -138,7 +133,7 @@ The methods above return a dictionary:
 
 - `'id'` is the id of the notification on Pushpad
 - `'scheduled'` is the estimated reach of the notification (i.e. the number of devices to which the notification will be sent, which can be different from the number of users, since a user may receive notifications on multiple devices)
-- `'uids'` (`deliver_to` only) are the user IDs that will be actually reached by the notification because they are subscribed to your notifications. For example if you send a notification to `['uid1', 'uid2', 'uid3']`, but only `'uid1'` is subscribed, you will get `['uid1']` in response. Note that if a user has unsubscribed after the last notification sent to him, he may still be reported for one time as subscribed (this is due to the way the W3C Push API works).
+- `'uids'` (when you pass `uids` while creating the notification) are the user IDs that will be actually reached by the notification because they are subscribed to your notifications. For example if you send a notification to `['uid1', 'uid2', 'uid3']`, but only `'uid1'` is subscribed, you will get `['uid1']` in response. Note that if a user has unsubscribed after the last notification sent to him, he may still be reported for one time as subscribed (this is due to the way the W3C Push API works).
 - `'send_at'` is present only for scheduled notifications. The fields `'scheduled'` and `'uids'` are not available in this case.
 
 ## License
