@@ -5,7 +5,7 @@ from __future__ import annotations
 import hmac
 from datetime import date, datetime, timezone
 from hashlib import sha256
-from typing import Any, Dict, Iterable, MutableMapping, Optional
+from typing import Any, Dict, MutableMapping, Optional
 
 try:  # pragma: no cover - exercised when requests is available
     import requests  # type: ignore
@@ -20,6 +20,7 @@ except ModuleNotFoundError:  # pragma: no cover - fallback for limited envs/test
 
 from ._version import __version__
 from .exceptions import PushpadAPIError, PushpadClientError
+from .resources import NotificationsResource, ProjectsResource, SendersResource, SubscriptionsResource
 
 JSONDict = MutableMapping[str, Any]
 
@@ -176,180 +177,3 @@ class Pushpad:
             except ValueError as exc:  # pragma: no cover - unexpected API behaviour
                 raise PushpadAPIError(response.status_code, "Invalid JSON in response") from exc
         return response.content
-
-
-class _ProjectBoundResource:
-    def __init__(self, client: Pushpad) -> None:
-        self._client = client
-
-    def _project_id(self, project_id: Optional[int]) -> int:
-        pid = project_id if project_id is not None else self._client.project_id
-        if pid is None:
-            raise ValueError("project_id is required for this operation")
-        return pid
-
-
-class NotificationsResource(_ProjectBoundResource):
-    def all(self, *, project_id: Optional[int] = None, page: Optional[int] = None, **filters: Any):
-        pid = self._project_id(project_id)
-        params = {k: v for k, v in {"page": page, **filters}.items() if v is not None}
-        return self._client._request("GET", f"/projects/{pid}/notifications", params=params)
-
-    def create(self, *, project_id: Optional[int] = None, **notification: Any):
-        pid = self._project_id(project_id)
-        return self._client._request("POST", f"/projects/{pid}/notifications", json=notification)
-
-    def get(self, notification_id: int):
-        if notification_id is None:
-            raise ValueError("notification_id is required")
-        return self._client._request("GET", f"/notifications/{notification_id}")
-
-    def cancel(self, notification_id: int) -> bool:
-        if notification_id is None:
-            raise ValueError("notification_id is required")
-        self._client._request("DELETE", f"/notifications/{notification_id}/cancel")
-        return True
-
-
-class SubscriptionsResource(_ProjectBoundResource):
-    def _build_filters(self, values: Dict[str, Any]) -> Dict[str, Any]:
-        params = dict(values)
-        uids = params.pop("uids", None)
-        tags = params.pop("tags", None)
-
-        def _normalize(value: Optional[Iterable[str]]):
-            if value is None:
-                return None
-            if isinstance(value, (list, tuple, set)):
-                return list(value)
-            return [value]
-
-        normalized_uids = _normalize(uids)
-        normalized_tags = _normalize(tags)
-        if normalized_uids is not None:
-            params["uids[]"] = normalized_uids
-        if normalized_tags is not None:
-            params["tags[]"] = normalized_tags
-        return {k: v for k, v in params.items() if v is not None}
-
-    def all(
-        self,
-        *,
-        project_id: Optional[int] = None,
-        page: Optional[int] = None,
-        per_page: Optional[int] = None,
-        uids: Optional[Iterable[str]] = None,
-        tags: Optional[Iterable[str]] = None,
-        **filters: Any,
-    ):
-        pid = self._project_id(project_id)
-        params = self._build_filters(
-            {"page": page, "per_page": per_page, "uids": uids, "tags": tags, **filters}
-        )
-        return self._client._request("GET", f"/projects/{pid}/subscriptions", params=params)
-
-    def count(
-        self,
-        *,
-        project_id: Optional[int] = None,
-        uids: Optional[Iterable[str]] = None,
-        tags: Optional[Iterable[str]] = None,
-        **filters: Any,
-    ) -> int:
-        pid = self._project_id(project_id)
-        params = self._build_filters({"uids": uids, "tags": tags, **filters})
-        params.setdefault("per_page", 1)
-        response = self._client._request(
-            "GET",
-            f"/projects/{pid}/subscriptions",
-            params=params,
-            raw=True,
-        )
-        total = response.headers.get("X-Total-Count")
-        if total is not None:
-            try:
-                return int(total)
-            except ValueError:
-                pass
-        try:
-            data = response.json()
-        except ValueError:
-            data = []
-        return len(data)
-
-    def create(self, *, project_id: Optional[int] = None, **subscription: Any):
-        pid = self._project_id(project_id)
-        return self._client._request("POST", f"/projects/{pid}/subscriptions", json=subscription)
-
-    def get(self, subscription_id: int, *, project_id: Optional[int] = None):
-        if subscription_id is None:
-            raise ValueError("subscription_id is required")
-        pid = self._project_id(project_id)
-        return self._client._request("GET", f"/projects/{pid}/subscriptions/{subscription_id}")
-
-    def update(self, subscription_id: int, *, project_id: Optional[int] = None, **subscription: Any):
-        if subscription_id is None:
-            raise ValueError("subscription_id is required")
-        pid = self._project_id(project_id)
-        return self._client._request("PATCH", f"/projects/{pid}/subscriptions/{subscription_id}", json=subscription)
-
-    def delete(self, subscription_id: int, *, project_id: Optional[int] = None) -> bool:
-        if subscription_id is None:
-            raise ValueError("subscription_id is required")
-        pid = self._project_id(project_id)
-        self._client._request("DELETE", f"/projects/{pid}/subscriptions/{subscription_id}")
-        return True
-
-
-class ProjectsResource:
-    def __init__(self, client: Pushpad) -> None:
-        self._client = client
-
-    def all(self):
-        return self._client._request("GET", "/projects")
-
-    def create(self, **project: Any):
-        return self._client._request("POST", "/projects", json=project)
-
-    def get(self, project_id: int):
-        if project_id is None:
-            raise ValueError("project_id is required")
-        return self._client._request("GET", f"/projects/{project_id}")
-
-    def update(self, project_id: int, **project: Any):
-        if project_id is None:
-            raise ValueError("project_id is required")
-        return self._client._request("PATCH", f"/projects/{project_id}", json=project)
-
-    def delete(self, project_id: int) -> bool:
-        if project_id is None:
-            raise ValueError("project_id is required")
-        self._client._request("DELETE", f"/projects/{project_id}")
-        return True
-
-
-class SendersResource:
-    def __init__(self, client: Pushpad) -> None:
-        self._client = client
-
-    def all(self):
-        return self._client._request("GET", "/senders")
-
-    def create(self, **sender: Any):
-        return self._client._request("POST", "/senders", json=sender)
-
-    def get(self, sender_id: int):
-        if sender_id is None:
-            raise ValueError("sender_id is required")
-        return self._client._request("GET", f"/senders/{sender_id}")
-
-    def update(self, sender_id: int, **sender: Any):
-        if sender_id is None:
-            raise ValueError("sender_id is required")
-        return self._client._request("PATCH", f"/senders/{sender_id}", json=sender)
-
-    def delete(self, sender_id: int) -> bool:
-        if sender_id is None:
-            raise ValueError("sender_id is required")
-        self._client._request("DELETE", f"/senders/{sender_id}")
-        return True
