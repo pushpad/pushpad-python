@@ -13,12 +13,12 @@ class NotificationsResource:
         self._client = client
 
     def all(self, *, project_id: Optional[int] = None, page: Optional[int] = None, **filters: Any):
-        pid = self._client._project_id(project_id)
+        pid = self._client._resolve_project_id(project_id)
         params = {k: v for k, v in {"page": page, **filters}.items() if v is not None}
         return self._client._request("GET", f"/projects/{pid}/notifications", params=params)
 
     def create(self, *, project_id: Optional[int] = None, **notification: Any):
-        pid = self._client._project_id(project_id)
+        pid = self._client._resolve_project_id(project_id)
         return self._client._request("POST", f"/projects/{pid}/notifications", json=notification)
 
     def get(self, notification_id: int):
