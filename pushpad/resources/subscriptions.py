@@ -2,12 +2,16 @@
 
 from __future__ import annotations
 
-from typing import Any, Dict, Iterable, Optional
+from typing import Any, Dict, Iterable, Optional, TYPE_CHECKING
 
-from .base import _ProjectBoundResource
+if TYPE_CHECKING:  # pragma: no cover - only used for typing
+    from ..pushpad import Pushpad
 
 
-class SubscriptionsResource(_ProjectBoundResource):
+class SubscriptionsResource:
+    def __init__(self, client: "Pushpad") -> None:
+        self._client = client
+
     def _build_filters(self, values: Dict[str, Any]) -> Dict[str, Any]:
         params = dict(values)
         uids = params.pop("uids", None)
@@ -38,7 +42,7 @@ class SubscriptionsResource(_ProjectBoundResource):
         tags: Optional[Iterable[str]] = None,
         **filters: Any,
     ):
-        pid = self._project_id(project_id)
+        pid = self._client._project_id(project_id)
         params = self._build_filters(
             {"page": page, "per_page": per_page, "uids": uids, "tags": tags, **filters}
         )
@@ -52,7 +56,7 @@ class SubscriptionsResource(_ProjectBoundResource):
         tags: Optional[Iterable[str]] = None,
         **filters: Any,
     ) -> int:
-        pid = self._project_id(project_id)
+        pid = self._client._project_id(project_id)
         params = self._build_filters({"uids": uids, "tags": tags, **filters})
         params.setdefault("per_page", 1)
         response = self._client._request(
@@ -74,24 +78,24 @@ class SubscriptionsResource(_ProjectBoundResource):
         return len(data)
 
     def create(self, *, project_id: Optional[int] = None, **subscription: Any):
-        pid = self._project_id(project_id)
+        pid = self._client._project_id(project_id)
         return self._client._request("POST", f"/projects/{pid}/subscriptions", json=subscription)
 
     def get(self, subscription_id: int, *, project_id: Optional[int] = None):
         if subscription_id is None:
             raise ValueError("subscription_id is required")
-        pid = self._project_id(project_id)
+        pid = self._client._project_id(project_id)
         return self._client._request("GET", f"/projects/{pid}/subscriptions/{subscription_id}")
 
     def update(self, subscription_id: int, *, project_id: Optional[int] = None, **subscription: Any):
         if subscription_id is None:
             raise ValueError("subscription_id is required")
-        pid = self._project_id(project_id)
+        pid = self._client._project_id(project_id)
         return self._client._request("PATCH", f"/projects/{pid}/subscriptions/{subscription_id}", json=subscription)
 
     def delete(self, subscription_id: int, *, project_id: Optional[int] = None) -> bool:
         if subscription_id is None:
             raise ValueError("subscription_id is required")
-        pid = self._project_id(project_id)
+        pid = self._client._project_id(project_id)
         self._client._request("DELETE", f"/projects/{pid}/subscriptions/{subscription_id}")
         return True

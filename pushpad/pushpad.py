@@ -121,6 +121,12 @@ class Pushpad:
         """Return the HMAC signature for a user identifier."""
         return hmac.new(self.auth_token.encode(), data.encode(), sha256).hexdigest()
 
+    def _project_id(self, project_id: Optional[int]) -> int:
+        pid = project_id if project_id is not None else self.project_id
+        if pid is None:
+            raise ValueError("project_id is required for this operation")
+        return pid
+
     def _request(
         self,
         method: str,
