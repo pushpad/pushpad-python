@@ -47,9 +47,9 @@ def _serialize_value(value: Any) -> Any:
     if isinstance(value, date):
         return value.isoformat()
     if isinstance(value, dict):
-        return {key: _serialize_value(val) for key, val in value.items() if val is not None}
+        return {key: _serialize_value(val) for key, val in value.items()}
     if isinstance(value, (list, tuple, set)):
-        return [_serialize_value(item) for item in value if item is not None]
+        return [_serialize_value(item) for item in value]
     return value
 
 

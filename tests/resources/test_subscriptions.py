@@ -48,6 +48,16 @@ class SubscriptionsResourceTests(BasePushpadTestCase):
         self.assertTrue(url.endswith("/projects/1/subscriptions/33"))
         self.assertEqual(session.request.call_args[1]["json"], {"tags": ["a"]})
 
+    def test_subscriptions_update_can_set_fields_to_null(self):
+        response = make_response(payload={"id": 33, "uid": None})
+        client, session = make_client(self.token, self.project_id, response)
+        subscription = client.subscriptions.update(33, uid=None)
+        self.assertEqual(subscription.uid, None)
+        method, url = session.request.call_args[0]
+        self.assertEqual(method, "PATCH")
+        self.assertTrue(url.endswith("/projects/1/subscriptions/33"))
+        self.assertEqual(session.request.call_args[1]["json"], {"uid": None})
+
     def test_subscriptions_delete(self):
         response = make_response(status=204)
         client, session = make_client(self.token, self.project_id, response)
