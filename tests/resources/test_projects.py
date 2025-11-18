@@ -6,12 +6,19 @@ class ProjectsResourceTests(BasePushpadTestCase):
     def test_projects_create(self):
         response = make_response(payload={"id": 2})
         client, session = make_client(self.token, response=response)
-        project = client.projects.create(name="Demo")
+        project = client.projects.create(
+            sender_id=99,
+            name="Demo",
+            website="https://example.com",
+        )
         self.assertEqual(project.id, 2)
         method, url = session.request.call_args[0]
         self.assertEqual(method, "POST")
         self.assertTrue(url.endswith("/projects"))
-        self.assertEqual(session.request.call_args[1]["json"], {"name": "Demo"})
+        self.assertEqual(
+            session.request.call_args[1]["json"],
+            {"sender_id": 99, "name": "Demo", "website": "https://example.com"},
+        )
 
     def test_projects_all(self):
         response = make_response(payload=[{"id": 1}])

@@ -6,12 +6,18 @@ class SubscriptionsResourceTests(BasePushpadTestCase):
     def test_subscriptions_create(self):
         response = make_response(payload={"id": 11})
         client, session = make_client(self.token, self.project_id, response)
-        subscription = client.subscriptions.create(uid="u1")
+        subscription = client.subscriptions.create(
+            endpoint="https://pushpad.example/endpoint",
+            uid="u1",
+        )
         self.assertEqual(subscription.id, 11)
         method, url = session.request.call_args[0]
         self.assertEqual(method, "POST")
         self.assertIn("/projects/1/subscriptions", url)
-        self.assertEqual(session.request.call_args[1]["json"], {"uid": "u1"})
+        self.assertEqual(
+            session.request.call_args[1]["json"],
+            {"endpoint": "https://pushpad.example/endpoint", "uid": "u1"},
+        )
 
     def test_subscriptions_all_accepts_boolean_expression(self):
         response = make_response(payload=[])
