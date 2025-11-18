@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from typing import Any, Dict, Iterable, Optional, TYPE_CHECKING
 
+from .._sentinel import _MISSING, _MissingType, remove_missing
 from ..pushpad import _ensure_api_list, _ensure_api_object
 from ..types import Subscription
 
@@ -74,11 +75,27 @@ class SubscriptionsResource:
             raise ValueError("response missing X-Total-Count header")
         return int(total)
 
-    def create(self, *, project_id: Optional[int] = None, **subscription: Any) -> Subscription:
+    def create(
+        self,
+        *,
+        project_id: Optional[int] = None,
+        endpoint: str | None | _MissingType = _MISSING,
+        p256dh: str | None | _MissingType = _MISSING,
+        auth: str | None | _MissingType = _MISSING,
+        uid: str | None | _MissingType = _MISSING,
+        tags: Iterable[str] | str | None | _MissingType = _MISSING,
+    ) -> Subscription:
         pid = self._client._resolve_project_id(project_id)
-        response = self._client._request("POST", f"/projects/{pid}/subscriptions", json=subscription)
-        payload = _ensure_api_object(response)
-        return Subscription.from_api(payload)
+        payload = remove_missing(
+            endpoint=endpoint,
+            p256dh=p256dh,
+            auth=auth,
+            uid=uid,
+            tags=tags,
+        )
+        response = self._client._request("POST", f"/projects/{pid}/subscriptions", json=payload)
+        data = _ensure_api_object(response)
+        return Subscription.from_api(data)
 
     def get(self, id: int, *, project_id: Optional[int] = None) -> Subscription:
         if id is None:
@@ -88,13 +105,24 @@ class SubscriptionsResource:
         payload = _ensure_api_object(response)
         return Subscription.from_api(payload)
 
-    def update(self, id: int, *, project_id: Optional[int] = None, **subscription: Any) -> Subscription:
+    def update(
+        self,
+        id: int,
+        *,
+        project_id: Optional[int] = None,
+        uid: str | None | _MissingType = _MISSING,
+        tags: Iterable[str] | str | None | _MissingType = _MISSING,
+    ) -> Subscription:
         if id is None:
             raise ValueError("id is required")
         pid = self._client._resolve_project_id(project_id)
-        response = self._client._request("PATCH", f"/projects/{pid}/subscriptions/{id}", json=subscription)
-        payload = _ensure_api_object(response)
-        return Subscription.from_api(payload)
+        payload = remove_missing(
+            uid=uid,
+            tags=tags,
+        )
+        response = self._client._request("PATCH", f"/projects/{pid}/subscriptions/{id}", json=payload)
+        data = _ensure_api_object(response)
+        return Subscription.from_api(data)
 
     def delete(self, id: int, *, project_id: Optional[int] = None) -> None:
         if id is None:

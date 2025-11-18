@@ -2,8 +2,10 @@
 
 from __future__ import annotations
 
-from typing import Any, Optional, TYPE_CHECKING
+from datetime import datetime
+from typing import Any, Iterable, Mapping, Optional, TYPE_CHECKING
 
+from .._sentinel import _MISSING, _MissingType, remove_missing
 from ..pushpad import _ensure_api_list, _ensure_api_object
 from ..types import Notification, NotificationCreateResult
 
@@ -28,11 +30,51 @@ class NotificationsResource:
         payload = _ensure_api_list(response)
         return [Notification.from_api(item) for item in payload]
 
-    def create(self, *, project_id: Optional[int] = None, **notification: Any) -> NotificationCreateResult:
+    def create(
+        self,
+        *,
+        body: str,
+        project_id: Optional[int] = None,
+        title: str | None | _MissingType = _MISSING,
+        target_url: str | None | _MissingType = _MISSING,
+        icon_url: str | None | _MissingType = _MISSING,
+        badge_url: str | None | _MissingType = _MISSING,
+        image_url: str | None | _MissingType = _MISSING,
+        ttl: int | None | _MissingType = _MISSING,
+        require_interaction: bool | None | _MissingType = _MISSING,
+        silent: bool | None | _MissingType = _MISSING,
+        urgent: bool | None | _MissingType = _MISSING,
+        custom_data: str | None | _MissingType = _MISSING,
+        actions: Iterable[Mapping[str, Any]] | None | _MissingType = _MISSING,
+        starred: bool | None | _MissingType = _MISSING,
+        send_at: datetime | str | None | _MissingType = _MISSING,
+        custom_metrics: Iterable[str] | str | None | _MissingType = _MISSING,
+        uids: Iterable[str] | str | None | _MissingType = _MISSING,
+        tags: Iterable[str] | str | None | _MissingType = _MISSING,
+    ) -> NotificationCreateResult:
         pid = self._client._resolve_project_id(project_id)
-        response = self._client._request("POST", f"/projects/{pid}/notifications", json=notification)
-        payload = _ensure_api_object(response)
-        return NotificationCreateResult.from_api(payload)
+        payload = remove_missing(
+            body=body,
+            title=title,
+            target_url=target_url,
+            icon_url=icon_url,
+            badge_url=badge_url,
+            image_url=image_url,
+            ttl=ttl,
+            require_interaction=require_interaction,
+            silent=silent,
+            urgent=urgent,
+            custom_data=custom_data,
+            starred=starred,
+            send_at=send_at,
+            actions=actions,
+            custom_metrics=custom_metrics,
+            uids=uids,
+            tags=tags,
+        )
+        response = self._client._request("POST", f"/projects/{pid}/notifications", json=payload)
+        data = _ensure_api_object(response)
+        return NotificationCreateResult.from_api(data)
 
     def get(self, id: int) -> Notification:
         if id is None:
