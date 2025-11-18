@@ -70,16 +70,9 @@ class SubscriptionsResource:
             params=params,
         )
         total = response.headers.get("X-Total-Count")
-        if total is not None:
-            try:
-                return int(total)
-            except ValueError:
-                pass
-        try:
-            data = response.json()
-        except ValueError:
-            data = []
-        return len(data)
+        if total is None:
+            raise ValueError("response missing X-Total-Count header")
+        return int(total)
 
     def create(self, *, project_id: Optional[int] = None, **subscription: Any) -> Subscription:
         pid = self._client._resolve_project_id(project_id)
