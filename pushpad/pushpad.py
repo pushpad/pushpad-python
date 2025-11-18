@@ -2,21 +2,13 @@
 
 from __future__ import annotations
 
+import requests
+from requests import RequestException
+
 import hmac
 from datetime import date, datetime, timezone
 from hashlib import sha256
 from typing import Any, Dict, MutableMapping, Optional
-
-try:  # pragma: no cover - exercised when requests is available
-    import requests  # type: ignore
-    RequestException = requests.RequestException
-except ModuleNotFoundError:  # pragma: no cover - fallback for limited envs/tests
-    requests = None  # type: ignore
-
-    class RequestException(Exception):
-        """Fallback exception used when the requests package is not installed."""
-
-        pass
 
 from ._version import __version__
 from .exceptions import PushpadAPIError, PushpadClientError
@@ -98,8 +90,6 @@ class Pushpad:
         if session is not None:
             self._session = session
         else:
-            if requests is None:
-                raise RuntimeError("The 'requests' package is required unless you provide a session instance.")
             self._session = requests.Session()
         self._session.headers.update(
             {
