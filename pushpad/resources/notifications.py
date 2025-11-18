@@ -21,13 +21,13 @@ class NotificationsResource:
         pid = self._client._resolve_project_id(project_id)
         return self._client._request("POST", f"/projects/{pid}/notifications", json=notification)
 
-    def get(self, notification_id: int):
-        if notification_id is None:
-            raise ValueError("notification_id is required")
-        return self._client._request("GET", f"/notifications/{notification_id}")
+    def get(self, id: int):
+        if id is None:
+            raise ValueError("id is required")
+        return self._client._request("GET", f"/notifications/{id}")
 
-    def cancel(self, notification_id: int) -> bool:
-        if notification_id is None:
-            raise ValueError("notification_id is required")
-        self._client._request("DELETE", f"/notifications/{notification_id}/cancel")
+    def cancel(self, id: int) -> bool:
+        if id is None:
+            raise ValueError("id is required")
+        self._client._request("DELETE", f"/notifications/{id}/cancel")
         return True

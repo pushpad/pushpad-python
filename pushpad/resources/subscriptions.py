@@ -81,21 +81,21 @@ class SubscriptionsResource:
         pid = self._client._resolve_project_id(project_id)
         return self._client._request("POST", f"/projects/{pid}/subscriptions", json=subscription)
 
-    def get(self, subscription_id: int, *, project_id: Optional[int] = None):
-        if subscription_id is None:
-            raise ValueError("subscription_id is required")
+    def get(self, id: int, *, project_id: Optional[int] = None):
+        if id is None:
+            raise ValueError("id is required")
         pid = self._client._resolve_project_id(project_id)
-        return self._client._request("GET", f"/projects/{pid}/subscriptions/{subscription_id}")
+        return self._client._request("GET", f"/projects/{pid}/subscriptions/{id}")
 
-    def update(self, subscription_id: int, *, project_id: Optional[int] = None, **subscription: Any):
-        if subscription_id is None:
-            raise ValueError("subscription_id is required")
+    def update(self, id: int, *, project_id: Optional[int] = None, **subscription: Any):
+        if id is None:
+            raise ValueError("id is required")
         pid = self._client._resolve_project_id(project_id)
-        return self._client._request("PATCH", f"/projects/{pid}/subscriptions/{subscription_id}", json=subscription)
+        return self._client._request("PATCH", f"/projects/{pid}/subscriptions/{id}", json=subscription)
 
-    def delete(self, subscription_id: int, *, project_id: Optional[int] = None) -> bool:
-        if subscription_id is None:
-            raise ValueError("subscription_id is required")
+    def delete(self, id: int, *, project_id: Optional[int] = None) -> bool:
+        if id is None:
+            raise ValueError("id is required")
         pid = self._client._resolve_project_id(project_id)
-        self._client._request("DELETE", f"/projects/{pid}/subscriptions/{subscription_id}")
+        self._client._request("DELETE", f"/projects/{pid}/subscriptions/{id}")
         return True

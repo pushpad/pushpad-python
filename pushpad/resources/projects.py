@@ -18,18 +18,18 @@ class ProjectsResource:
     def create(self, **project: Any):
         return self._client._request("POST", "/projects", json=project)
 
-    def get(self, project_id: int):
-        if project_id is None:
-            raise ValueError("project_id is required")
-        return self._client._request("GET", f"/projects/{project_id}")
+    def get(self, id: int):
+        if id is None:
+            raise ValueError("id is required")
+        return self._client._request("GET", f"/projects/{id}")
 
-    def update(self, project_id: int, **project: Any):
-        if project_id is None:
-            raise ValueError("project_id is required")
-        return self._client._request("PATCH", f"/projects/{project_id}", json=project)
+    def update(self, id: int, **project: Any):
+        if id is None:
+            raise ValueError("id is required")
+        return self._client._request("PATCH", f"/projects/{id}", json=project)
 
-    def delete(self, project_id: int) -> bool:
-        if project_id is None:
-            raise ValueError("project_id is required")
-        self._client._request("DELETE", f"/projects/{project_id}")
+    def delete(self, id: int) -> bool:
+        if id is None:
+            raise ValueError("id is required")
+        self._client._request("DELETE", f"/projects/{id}")
         return True
