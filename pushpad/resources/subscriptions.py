@@ -79,11 +79,11 @@ class SubscriptionsResource:
         self,
         *,
         project_id: Optional[int] = None,
-        endpoint: str | None | _MissingType = _MISSING,
-        p256dh: str | None | _MissingType = _MISSING,
-        auth: str | None | _MissingType = _MISSING,
+        endpoint: str,
+        p256dh: str | _MissingType = _MISSING,
+        auth: str | _MissingType = _MISSING,
         uid: str | None | _MissingType = _MISSING,
-        tags: Iterable[str] | str | None | _MissingType = _MISSING,
+        tags: Iterable[str] | _MissingType = _MISSING,
     ) -> Subscription:
         pid = self._client._resolve_project_id(project_id)
         payload = remove_missing(
@@ -111,7 +111,7 @@ class SubscriptionsResource:
         *,
         project_id: Optional[int] = None,
         uid: str | None | _MissingType = _MISSING,
-        tags: Iterable[str] | str | None | _MissingType = _MISSING,
+        tags: Iterable[str] | _MissingType = _MISSING,
     ) -> Subscription:
         if id is None:
             raise ValueError("id is required")

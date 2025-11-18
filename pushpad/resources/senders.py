@@ -25,8 +25,8 @@ class SendersResource:
         self,
         *,
         name: str,
-        vapid_private_key: str | None | _MissingType = _MISSING,
-        vapid_public_key: str | None | _MissingType = _MISSING,
+        vapid_private_key: str | _MissingType = _MISSING,
+        vapid_public_key: str | _MissingType = _MISSING,
     ) -> Sender:
         payload = remove_missing(
             name=name,
@@ -48,7 +48,7 @@ class SendersResource:
         self,
         id: int,
         *,
-        name: str | None | _MissingType = _MISSING,
+        name: str | _MissingType = _MISSING,
     ) -> Sender:
         if id is None:
             raise ValueError("id is required")

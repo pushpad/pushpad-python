@@ -24,14 +24,14 @@ class ProjectsResource:
     def create(
         self,
         *,
-        sender_id: int | None | _MissingType = _MISSING,
+        sender_id: int,
         name: str,
-        website: str | None | _MissingType = _MISSING,
-        icon_url: str | None | _MissingType = _MISSING,
-        badge_url: str | None | _MissingType = _MISSING,
-        notifications_ttl: int | None | _MissingType = _MISSING,
-        notifications_require_interaction: bool | None | _MissingType = _MISSING,
-        notifications_silent: bool | None | _MissingType = _MISSING,
+        website: str,
+        icon_url: str | _MissingType = _MISSING,
+        badge_url: str | _MissingType = _MISSING,
+        notifications_ttl: int | _MissingType = _MISSING,
+        notifications_require_interaction: bool | _MissingType = _MISSING,
+        notifications_silent: bool | _MissingType = _MISSING,
     ) -> Project:
         payload = remove_missing(
             sender_id=sender_id,
@@ -58,13 +58,13 @@ class ProjectsResource:
         self,
         id: int,
         *,
-        name: str | None | _MissingType = _MISSING,
-        website: str | None | _MissingType = _MISSING,
-        icon_url: str | None | _MissingType = _MISSING,
-        badge_url: str | None | _MissingType = _MISSING,
-        notifications_ttl: int | None | _MissingType = _MISSING,
-        notifications_require_interaction: bool | None | _MissingType = _MISSING,
-        notifications_silent: bool | None | _MissingType = _MISSING,
+        name: str | _MissingType = _MISSING,
+        website: str | _MissingType = _MISSING,
+        icon_url: str | _MissingType = _MISSING,
+        badge_url: str | _MissingType = _MISSING,
+        notifications_ttl: int | _MissingType = _MISSING,
+        notifications_require_interaction: bool | _MissingType = _MISSING,
+        notifications_silent: bool | _MissingType = _MISSING,
     ) -> Project:
         if id is None:
             raise ValueError("id is required")
