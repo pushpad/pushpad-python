@@ -83,17 +83,17 @@ class Pushpad:
     ) -> None:
         if not auth_token:
             raise ValueError("auth_token is required")
-        self.auth_token = auth_token
-        self.project_id = project_id
-        self.base_url = (base_url or self.DEFAULT_BASE_URL).rstrip("/")
-        self.timeout = timeout
+        self._auth_token = auth_token
+        self._project_id = project_id
+        self._base_url = (base_url or self.DEFAULT_BASE_URL).rstrip("/")
+        self._timeout = timeout
         if session is not None:
             self._session = session
         else:
             self._session = requests.Session()
         self._session.headers.update(
             {
-                "Authorization": f"Bearer {self.auth_token}",
+                "Authorization": f"Bearer {self._auth_token}",
                 "Accept": "application/json",
                 "Content-Type": "application/json",
                 "User-Agent": f"pushpad-python/{__version__}",
@@ -119,10 +119,10 @@ class Pushpad:
 
     def signature_for(self, data: str) -> str:
         """Return the HMAC signature for a user identifier."""
-        return hmac.new(self.auth_token.encode(), data.encode(), sha256).hexdigest()
+        return hmac.new(self._auth_token.encode(), data.encode(), sha256).hexdigest()
 
     def _resolve_project_id(self, project_id: Optional[int]) -> int:
-        pid = project_id if project_id is not None else self.project_id
+        pid = project_id if project_id is not None else self._project_id
         if pid is None:
             raise ValueError("project_id is required for this operation")
         return pid
@@ -136,14 +136,14 @@ class Pushpad:
         json: Optional[JSONDict] = None,
         raw: bool = False,
     ):
-        url = f"{self.base_url}{path}"
+        url = f"{self._base_url}{path}"
         try:
             response = self._session.request(
                 method,
                 url,
                 params=_prepare_params(params),
                 json=_prepare_payload(json),
-                timeout=self.timeout,
+                timeout=self._timeout,
             )
         except RequestException as exc:
             raise PushpadClientError(str(exc), original_exception=exc) from exc
