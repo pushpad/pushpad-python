@@ -4,6 +4,14 @@
 from ._version import __version__
 from .exceptions import PushpadAPIError, PushpadClientError, PushpadError
 from .pushpad import Pushpad
+from .types import (
+    Notification,
+    NotificationAction,
+    NotificationCreateResult,
+    Project,
+    Sender,
+    Subscription,
+)
 
 __all__ = [
     "__version__",
@@ -11,4 +19,10 @@ __all__ = [
     "PushpadError",
     "PushpadClientError",
     "PushpadAPIError",
+    "Notification",
+    "NotificationAction",
+    "NotificationCreateResult",
+    "Subscription",
+    "Project",
+    "Sender",
 ]

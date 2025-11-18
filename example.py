@@ -17,7 +17,7 @@ created = client.notifications.create(
     uids=["user1", "user2", "user3"],
     tags=["segment1", "segment2"],
 )
-print(f"Notification accepted with id: {created['id']}")
+print(f"Notification accepted with id: {created.id}")
 
 latest = client.notifications.all(page=1)
 print(f"Latest notifications: {latest}")

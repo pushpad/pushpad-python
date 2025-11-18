@@ -16,7 +16,9 @@ class SendersResourceTests(BasePushpadTestCase):
     def test_senders_all(self):
         response = make_response(payload=[{"id": 1}])
         client, session = make_client(self.token, response=response)
-        self.assertEqual(client.senders.all(), [{"id": 1}])
+        senders = client.senders.all()
+        self.assertEqual(len(senders), 1)
+        self.assertEqual(senders[0].id, 1)
         method, url = session.request.call_args[0]
         self.assertEqual(method, "GET")
         self.assertTrue(url.endswith("/senders"))
@@ -42,7 +44,7 @@ class SendersResourceTests(BasePushpadTestCase):
     def test_senders_delete(self):
         response = make_response(status=204)
         client, session = make_client(self.token, response=response)
-        self.assertTrue(client.senders.delete(66))
+        self.assertIsNone(client.senders.delete(66))
         method, url = session.request.call_args[0]
         self.assertEqual(method, "DELETE")
         self.assertTrue(url.endswith("/senders/66"))

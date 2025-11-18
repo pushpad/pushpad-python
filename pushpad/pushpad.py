@@ -3,16 +3,15 @@
 from __future__ import annotations
 
 import requests
-from requests import RequestException
+from requests import RequestException, Response
 
 import hmac
 from datetime import date, datetime, timezone
 from hashlib import sha256
-from typing import Any, Dict, MutableMapping, Optional
+from typing import Any, Dict, MutableMapping, Optional, Union
 
 from ._version import __version__
 from .exceptions import PushpadAPIError, PushpadClientError
-from .resources import NotificationsResource, ProjectsResource, SendersResource, SubscriptionsResource
 
 JSONDict = MutableMapping[str, Any]
 
@@ -27,12 +26,31 @@ class APIObject(dict):
             raise AttributeError(item) from exc
 
 
+APIResponse = Union[APIObject, list[APIObject], None]
+
+
 def _wrap_response(data: Any) -> Any:
     if isinstance(data, dict):
         return APIObject({key: _wrap_response(value) for key, value in data.items()})
     if isinstance(data, list):
         return [_wrap_response(item) for item in data]
     return data
+
+
+def _ensure_api_object(data: APIResponse) -> APIObject:
+    if isinstance(data, APIObject):
+        return data
+    raise PushpadClientError(f"API response is not an object: {type(data).__name__}")
+
+
+def _ensure_api_list(data: APIResponse) -> list[APIObject]:
+    if data is None:
+        return []
+    if isinstance(data, list):
+        if all(isinstance(item, APIObject) for item in data):
+            return data
+        raise PushpadClientError("API response list contains invalid entries")
+    raise PushpadClientError(f"API response is not a list: {type(data).__name__}")
 
 
 def _isoformat(value: datetime) -> str:
@@ -65,6 +83,9 @@ def _prepare_params(params: Optional[Dict[str, Any]]) -> Optional[Dict[str, Any]
     serialized = _serialize_value(dict(params))
     assert isinstance(serialized, dict)
     return serialized  # type: ignore[return-value]
+
+
+from .resources import NotificationsResource, ProjectsResource, SendersResource, SubscriptionsResource
 
 
 class Pushpad:
@@ -127,15 +148,14 @@ class Pushpad:
             raise ValueError("project_id is required for this operation")
         return pid
 
-    def _request(
+    def _raw_request(
         self,
         method: str,
         path: str,
         *,
         params: Optional[Dict[str, Any]] = None,
         json: Optional[JSONDict] = None,
-        raw: bool = False,
-    ):
+    ) -> Response:
         url = f"{self._base_url}{path}"
         try:
             response = self._session.request(
@@ -160,16 +180,22 @@ class Pushpad:
                     message = response.text
             raise PushpadAPIError(response.status_code, message, response_body=payload or response.text)
 
-        if raw:
-            return response
+        return response
 
+    def _request(
+        self,
+        method: str,
+        path: str,
+        *,
+        params: Optional[Dict[str, Any]] = None,
+        json: Optional[JSONDict] = None,
+    ) -> APIResponse:
+        response = self._raw_request(method, path, params=params, json=json)
         if response.status_code in (202, 204) or not response.content:
             return None
 
-        content_type = response.headers.get("Content-Type", "")
-        if "application/json" in content_type:
-            try:
-                return _wrap_response(response.json())
-            except ValueError as exc:  # pragma: no cover - unexpected API behaviour
-                raise PushpadAPIError(response.status_code, "Invalid JSON in response") from exc
-        return response.content
+        try:
+            data = response.json()
+        except ValueError as exc:  # pragma: no cover - unexpected API behaviour
+            raise PushpadAPIError(response.status_code, "Invalid JSON in response") from exc
+        return _wrap_response(data)

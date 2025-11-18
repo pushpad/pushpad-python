@@ -61,7 +61,7 @@ class SubscriptionsResourceTests(BasePushpadTestCase):
     def test_subscriptions_delete(self):
         response = make_response(status=204)
         client, session = make_client(self.token, self.project_id, response)
-        self.assertTrue(client.subscriptions.delete(44))
+        self.assertIsNone(client.subscriptions.delete(44))
         method, url = session.request.call_args[0]
         self.assertEqual(method, "DELETE")
         self.assertTrue(url.endswith("/projects/1/subscriptions/44"))

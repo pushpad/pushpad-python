@@ -112,12 +112,12 @@ result = client.notifications.create(
 )
 
 # Inspect the response
-print(result['id'], result['scheduled'])
+print(result.id, result.scheduled)
 
 # List, inspect, or cancel notifications
 client.notifications.all(page=1)
-client.notifications.get(result['id'])
-client.notifications.cancel(result['id'])
+client.notifications.get(result.id)
+client.notifications.cancel(result.id)
 ```
 
 Set `uids` to reach a list of user IDs, set `tags` to reach subscribers that match your segments
@@ -129,12 +129,14 @@ You can set the default values for most fields in the project settings. See also
 
 If you try to send a notification to a user ID, but that user is not subscribed, that ID is simply ignored.
 
-The methods above return a dictionary: 
+`client.notifications.create` returns a `NotificationCreateResult`: 
 
-- `'id'` is the id of the notification on Pushpad
-- `'scheduled'` is the estimated reach of the notification (i.e. the number of devices to which the notification will be sent, which can be different from the number of users, since a user may receive notifications on multiple devices)
-- `'uids'` (when you pass `uids` while creating the notification) are the user IDs that will be actually reached by the notification because they are subscribed to your notifications. For example if you send a notification to `['uid1', 'uid2', 'uid3']`, but only `'uid1'` is subscribed, you will get `['uid1']` in response. Note that if a user has unsubscribed after the last notification sent to him, he may still be reported for one time as subscribed (this is due to the way the W3C Push API works).
-- `'send_at'` is present only for scheduled notifications. The fields `'scheduled'` and `'uids'` are not available in this case.
+- `result.id` is the id of the notification on Pushpad
+- `result.scheduled` is the estimated reach of the notification (i.e. the number of devices to which the notification will be sent, which can be different from the number of users, since a user may receive notifications on multiple devices)
+- `result.uids` (when you pass `uids` while creating the notification) are the user IDs that will be actually reached by the notification because they are subscribed to your notifications. For example if you send a notification to `['uid1', 'uid2', 'uid3']`, but only `'uid1'` is subscribed, you will get `['uid1']` in response. Note that if a user has unsubscribed after the last notification sent to him, he may still be reported for one time as subscribed (this is due to the way the W3C Push API works).
+- `result.send_at` is present only for scheduled notifications. The fields `scheduled` and `uids` are not available in this case.
+
+`client.notifications.all()` and `client.notifications.get()` return fully populated `Notification` objects that include metadata such as stats counters and delivery information.
 
 ## License
 

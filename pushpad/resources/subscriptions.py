@@ -4,6 +4,9 @@ from __future__ import annotations
 
 from typing import Any, Dict, Iterable, Optional, TYPE_CHECKING
 
+from ..pushpad import _ensure_api_list, _ensure_api_object
+from ..types import Subscription
+
 if TYPE_CHECKING:  # pragma: no cover - only used for typing
     from ..pushpad import Pushpad
 
@@ -41,12 +44,14 @@ class SubscriptionsResource:
         uids: Optional[Iterable[str]] = None,
         tags: Optional[Iterable[str]] = None,
         **filters: Any,
-    ):
+    ) -> list[Subscription]:
         pid = self._client._resolve_project_id(project_id)
         params = self._build_filters(
             {"page": page, "per_page": per_page, "uids": uids, "tags": tags, **filters}
         )
-        return self._client._request("GET", f"/projects/{pid}/subscriptions", params=params)
+        response = self._client._request("GET", f"/projects/{pid}/subscriptions", params=params)
+        payload = _ensure_api_list(response)
+        return [Subscription.from_api(item) for item in payload]
 
     def count(
         self,
@@ -59,11 +64,10 @@ class SubscriptionsResource:
         pid = self._client._resolve_project_id(project_id)
         params = self._build_filters({"uids": uids, "tags": tags, **filters})
         params.setdefault("per_page", 1)
-        response = self._client._request(
+        response = self._client._raw_request(
             "GET",
             f"/projects/{pid}/subscriptions",
             params=params,
-            raw=True,
         )
         total = response.headers.get("X-Total-Count")
         if total is not None:
@@ -77,25 +81,31 @@ class SubscriptionsResource:
             data = []
         return len(data)
 
-    def create(self, *, project_id: Optional[int] = None, **subscription: Any):
+    def create(self, *, project_id: Optional[int] = None, **subscription: Any) -> Subscription:
         pid = self._client._resolve_project_id(project_id)
-        return self._client._request("POST", f"/projects/{pid}/subscriptions", json=subscription)
+        response = self._client._request("POST", f"/projects/{pid}/subscriptions", json=subscription)
+        payload = _ensure_api_object(response)
+        return Subscription.from_api(payload)
 
-    def get(self, id: int, *, project_id: Optional[int] = None):
+    def get(self, id: int, *, project_id: Optional[int] = None) -> Subscription:
         if id is None:
             raise ValueError("id is required")
         pid = self._client._resolve_project_id(project_id)
-        return self._client._request("GET", f"/projects/{pid}/subscriptions/{id}")
+        response = self._client._request("GET", f"/projects/{pid}/subscriptions/{id}")
+        payload = _ensure_api_object(response)
+        return Subscription.from_api(payload)
 
-    def update(self, id: int, *, project_id: Optional[int] = None, **subscription: Any):
+    def update(self, id: int, *, project_id: Optional[int] = None, **subscription: Any) -> Subscription:
         if id is None:
             raise ValueError("id is required")
         pid = self._client._resolve_project_id(project_id)
-        return self._client._request("PATCH", f"/projects/{pid}/subscriptions/{id}", json=subscription)
+        response = self._client._request("PATCH", f"/projects/{pid}/subscriptions/{id}", json=subscription)
+        payload = _ensure_api_object(response)
+        return Subscription.from_api(payload)
 
-    def delete(self, id: int, *, project_id: Optional[int] = None) -> bool:
+    def delete(self, id: int, *, project_id: Optional[int] = None) -> None:
         if id is None:
             raise ValueError("id is required")
         pid = self._client._resolve_project_id(project_id)
         self._client._request("DELETE", f"/projects/{pid}/subscriptions/{id}")
-        return True
+        return None
