@@ -99,7 +99,7 @@ class Pushpad:
         project_id: Optional[int] = None,
         *,
         base_url: Optional[str] = None,
-        timeout: int = 10,
+        timeout: int = 30,
         session: Optional[Any] = None,
     ) -> None:
         if not auth_token:
