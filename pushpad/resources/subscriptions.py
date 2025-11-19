@@ -44,12 +44,9 @@ class SubscriptionsResource:
         per_page: Optional[int] = None,
         uids: Optional[Iterable[str]] = None,
         tags: Optional[Iterable[str]] = None,
-        **filters: Any,
     ) -> list[Subscription]:
         pid = self._client._resolve_project_id(project_id)
-        params = self._build_filters(
-            {"page": page, "per_page": per_page, "uids": uids, "tags": tags, **filters}
-        )
+        params = self._build_filters({"page": page, "per_page": per_page, "uids": uids, "tags": tags})
         response = self._client._request("GET", f"/projects/{pid}/subscriptions", params=params)
         payload = _ensure_api_list(response)
         return [Subscription.from_api(item) for item in payload]
@@ -60,10 +57,9 @@ class SubscriptionsResource:
         project_id: Optional[int] = None,
         uids: Optional[Iterable[str]] = None,
         tags: Optional[Iterable[str]] = None,
-        **filters: Any,
     ) -> int:
         pid = self._client._resolve_project_id(project_id)
-        params = self._build_filters({"uids": uids, "tags": tags, **filters})
+        params = self._build_filters({"uids": uids, "tags": tags})
         params.setdefault("per_page", 1)
         response = self._client._raw_request(
             "GET",

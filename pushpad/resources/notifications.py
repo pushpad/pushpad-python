@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import Any, Iterable, Mapping, Optional, TYPE_CHECKING
+from typing import Iterable, Mapping, Optional, TYPE_CHECKING
 
 from .._sentinel import _MISSING, _MissingType, remove_missing
 from ..pushpad import _ensure_api_list, _ensure_api_object
@@ -22,10 +22,9 @@ class NotificationsResource:
         *,
         project_id: Optional[int] = None,
         page: Optional[int] = None,
-        **filters: Any,
     ) -> list[Notification]:
         pid = self._client._resolve_project_id(project_id)
-        params = {k: v for k, v in {"page": page, **filters}.items() if v is not None}
+        params = {"page": page} if page is not None else None
         response = self._client._request("GET", f"/projects/{pid}/notifications", params=params)
         payload = _ensure_api_list(response)
         return [Notification.from_api(item) for item in payload]
