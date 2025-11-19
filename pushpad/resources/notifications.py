@@ -20,8 +20,8 @@ class NotificationsResource:
     def all(
         self,
         *,
-        project_id: Optional[int] = None,
         page: Optional[int] = None,
+        project_id: Optional[int] = None,
     ) -> list[Notification]:
         pid = self._client._resolve_project_id(project_id)
         params = {"page": page} if page is not None else None
@@ -33,7 +33,6 @@ class NotificationsResource:
         self,
         *,
         body: str,
-        project_id: Optional[int] = None,
         title: str | _MissingType = _MISSING,
         target_url: str | _MissingType = _MISSING,
         icon_url: str | _MissingType = _MISSING,
@@ -50,6 +49,7 @@ class NotificationsResource:
         custom_metrics: Iterable[str] | _MissingType = _MISSING,
         uids: Iterable[str] | _MissingType = _MISSING,
         tags: Iterable[str] | _MissingType = _MISSING,
+        project_id: Optional[int] = None,
     ) -> NotificationCreateResult:
         pid = self._client._resolve_project_id(project_id)
         payload = remove_missing(

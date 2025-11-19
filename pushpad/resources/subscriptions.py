@@ -39,11 +39,11 @@ class SubscriptionsResource:
     def all(
         self,
         *,
-        project_id: Optional[int] = None,
         page: Optional[int] = None,
         per_page: Optional[int] = None,
         uids: Optional[Iterable[str]] = None,
         tags: Optional[Iterable[str]] = None,
+        project_id: Optional[int] = None,
     ) -> list[Subscription]:
         pid = self._client._resolve_project_id(project_id)
         params = self._build_filters({"page": page, "per_page": per_page, "uids": uids, "tags": tags})
@@ -54,9 +54,9 @@ class SubscriptionsResource:
     def count(
         self,
         *,
-        project_id: Optional[int] = None,
         uids: Optional[Iterable[str]] = None,
         tags: Optional[Iterable[str]] = None,
+        project_id: Optional[int] = None,
     ) -> int:
         pid = self._client._resolve_project_id(project_id)
         params = self._build_filters({"uids": uids, "tags": tags})
@@ -74,12 +74,12 @@ class SubscriptionsResource:
     def create(
         self,
         *,
-        project_id: Optional[int] = None,
         endpoint: str,
         p256dh: str | _MissingType = _MISSING,
         auth: str | _MissingType = _MISSING,
         uid: str | None | _MissingType = _MISSING,
         tags: Iterable[str] | _MissingType = _MISSING,
+        project_id: Optional[int] = None,
     ) -> Subscription:
         pid = self._client._resolve_project_id(project_id)
         payload = remove_missing(
@@ -105,9 +105,9 @@ class SubscriptionsResource:
         self,
         id: int,
         *,
-        project_id: Optional[int] = None,
         uid: str | None | _MissingType = _MISSING,
         tags: Iterable[str] | _MissingType = _MISSING,
+        project_id: Optional[int] = None,
     ) -> Subscription:
         if id is None:
             raise ValueError("id is required")
