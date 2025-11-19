@@ -2,11 +2,11 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
-from typing import Any, Mapping, Optional
+from dataclasses import dataclass
+from typing import Any, Mapping
 
 
-def _to_str_list(values: Any) -> Optional[list[str]]:
+def _to_str_list(values: Any) -> list[str] | None:
     if values is None:
         return None
     if isinstance(values, list):
@@ -18,10 +18,10 @@ def _to_str_list(values: Any) -> Optional[list[str]]:
 
 @dataclass
 class NotificationAction:
-    title: Optional[str] = None
-    target_url: Optional[str] = None
-    icon: Optional[str] = None
-    action: Optional[str] = None
+    title: str | None
+    target_url: str | None
+    icon: str | None
+    action: str | None
 
     @classmethod
     def from_api(cls, data: Mapping[str, Any]) -> "NotificationAction":
@@ -45,10 +45,10 @@ def _to_actions(values: Any) -> list[NotificationAction]:
 
 @dataclass
 class NotificationCreateResult:
-    id: Optional[int] = None
-    scheduled: Optional[int] = None
-    uids: Optional[list[str]] = None
-    send_at: Optional[str] = None
+    id: int
+    scheduled: int | None
+    uids: list[str] | None
+    send_at: str | None
 
     @classmethod
     def from_api(cls, data: Mapping[str, Any]) -> "NotificationCreateResult":
@@ -62,31 +62,31 @@ class NotificationCreateResult:
 
 @dataclass
 class Notification:
-    id: Optional[int] = None
-    project_id: Optional[int] = None
-    title: Optional[str] = None
-    body: Optional[str] = None
-    target_url: Optional[str] = None
-    icon_url: Optional[str] = None
-    badge_url: Optional[str] = None
-    image_url: Optional[str] = None
-    ttl: Optional[int] = None
-    require_interaction: Optional[bool] = None
-    silent: Optional[bool] = None
-    urgent: Optional[bool] = None
-    custom_data: Optional[str] = None
-    actions: list[NotificationAction] = field(default_factory=list)
-    starred: Optional[bool] = None
-    send_at: Optional[str] = None
-    custom_metrics: Optional[list[str]] = None
-    uids: Optional[list[str]] = None
-    tags: Optional[list[str]] = None
-    created_at: Optional[str] = None
-    successfully_sent_count: Optional[int] = None
-    opened_count: Optional[int] = None
-    scheduled_count: Optional[int] = None
-    scheduled: bool | int | None = None
-    cancelled: Optional[bool] = None
+    id: int
+    project_id: int
+    title: str
+    body: str
+    target_url: str
+    icon_url: str | None
+    badge_url: str | None
+    image_url: str | None
+    ttl: int
+    require_interaction: bool
+    silent: bool
+    urgent: bool
+    custom_data: str | None
+    actions: list[NotificationAction]
+    starred: bool
+    send_at: str | None
+    custom_metrics: list[str]
+    uids: list[str] | None
+    tags: list[str] | None
+    created_at: str
+    successfully_sent_count: int | None
+    opened_count: int | None
+    scheduled_count: int | None
+    scheduled: bool | None
+    cancelled: bool | None
 
     @classmethod
     def from_api(cls, data: Mapping[str, Any]) -> "Notification":
@@ -107,7 +107,7 @@ class Notification:
             actions=_to_actions(data.get("actions")),
             starred=data.get("starred"),
             send_at=data.get("send_at"),
-            custom_metrics=_to_str_list(data.get("custom_metrics")),
+            custom_metrics=_to_str_list(data.get("custom_metrics")) or [],
             uids=_to_str_list(data.get("uids")),
             tags=_to_str_list(data.get("tags")),
             created_at=data.get("created_at"),
@@ -121,15 +121,15 @@ class Notification:
 
 @dataclass
 class Subscription:
-    id: Optional[int] = None
-    project_id: Optional[int] = None
-    endpoint: Optional[str] = None
-    p256dh: Optional[str] = None
-    auth: Optional[str] = None
-    uid: Optional[str] = None
-    tags: Optional[list[str]] = None
-    last_click_at: Optional[str] = None
-    created_at: Optional[str] = None
+    id: int
+    project_id: int
+    endpoint: str
+    p256dh: str | None
+    auth: str | None
+    uid: str | None
+    tags: list[str]
+    last_click_at: str | None
+    created_at: str
 
     @classmethod
     def from_api(cls, data: Mapping[str, Any]) -> "Subscription":
@@ -140,7 +140,7 @@ class Subscription:
             p256dh=data.get("p256dh"),
             auth=data.get("auth"),
             uid=data.get("uid"),
-            tags=_to_str_list(data.get("tags")),
+            tags=_to_str_list(data.get("tags")) or [],
             last_click_at=data.get("last_click_at"),
             created_at=data.get("created_at"),
         )
@@ -148,16 +148,16 @@ class Subscription:
 
 @dataclass
 class Project:
-    id: Optional[int] = None
-    sender_id: Optional[int] = None
-    name: Optional[str] = None
-    website: Optional[str] = None
-    icon_url: Optional[str] = None
-    badge_url: Optional[str] = None
-    notifications_ttl: Optional[int] = None
-    notifications_require_interaction: Optional[bool] = None
-    notifications_silent: Optional[bool] = None
-    created_at: Optional[str] = None
+    id: int
+    sender_id: int
+    name: str
+    website: str
+    icon_url: str | None
+    badge_url: str | None
+    notifications_ttl: int
+    notifications_require_interaction: bool
+    notifications_silent: bool
+    created_at: str
 
     @classmethod
     def from_api(cls, data: Mapping[str, Any]) -> "Project":
@@ -177,11 +177,11 @@ class Project:
 
 @dataclass
 class Sender:
-    id: Optional[int] = None
-    name: Optional[str] = None
-    vapid_private_key: Optional[str] = None
-    vapid_public_key: Optional[str] = None
-    created_at: Optional[str] = None
+    id: int
+    name: str
+    vapid_private_key: str
+    vapid_public_key: str
+    created_at: str
 
     @classmethod
     def from_api(cls, data: Mapping[str, Any]) -> "Sender":
