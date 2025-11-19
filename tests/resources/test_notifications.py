@@ -13,6 +13,13 @@ class NotificationsResourceTests(BasePushpadTestCase):
         self.assertIn("/projects/1/notifications", url)
         self.assertEqual(session.request.call_args[1]["json"], {"body": "Hello"})
 
+    def test_notifications_send_is_create_alias(self):
+        client, _ = make_client(self.token, self.project_id)
+        self.assertIs(
+            client.notifications.send.__func__,
+            client.notifications.create.__func__,
+        )
+
     def test_notifications_requires_project(self):
         client, session = make_client(self.token)
         with self.assertRaises(ValueError):

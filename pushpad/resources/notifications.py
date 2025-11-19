@@ -75,6 +75,8 @@ class NotificationsResource:
         data = _ensure_api_object(response)
         return NotificationCreateResult.from_api(data)
 
+    send = create
+
     def get(self, id: int) -> Notification:
         if id is None:
             raise ValueError("id is required")
