@@ -7,33 +7,6 @@ from typing import Any, Mapping
 
 
 @dataclass
-class NotificationAction:
-    title: str | None
-    target_url: str | None
-    icon: str | None
-    action: str | None
-
-    @classmethod
-    def from_api(cls, data: Mapping[str, Any]) -> "NotificationAction":
-        return cls(
-            title=data.get("title"),
-            target_url=data.get("target_url"),
-            icon=data.get("icon"),
-            action=data.get("action"),
-        )
-
-
-def _to_actions(values: Any) -> list[NotificationAction]:
-    if not values:
-        return []
-    actions: list[NotificationAction] = []
-    for entry in values:
-        if isinstance(entry, Mapping):
-            actions.append(NotificationAction.from_api(entry))
-    return actions
-
-
-@dataclass
 class NotificationCreateResult:
     id: int
     scheduled: int | None
@@ -65,7 +38,7 @@ class Notification:
     silent: bool
     urgent: bool
     custom_data: str | None
-    actions: list[NotificationAction]
+    actions: list[dict[str, Any]] | None
     starred: bool
     send_at: str | None
     custom_metrics: list[str]
@@ -94,7 +67,7 @@ class Notification:
             silent=data.get("silent"),
             urgent=data.get("urgent"),
             custom_data=data.get("custom_data"),
-            actions=_to_actions(data.get("actions")),
+            actions=data.get("actions"),
             starred=data.get("starred"),
             send_at=data.get("send_at"),
             custom_metrics=data.get("custom_metrics"),
@@ -186,7 +159,6 @@ class Sender:
 
 __all__ = [
     "Notification",
-    "NotificationAction",
     "NotificationCreateResult",
     "Subscription",
     "Project",
