@@ -39,6 +39,36 @@ class ProjectsResourceTests(BasePushpadTestCase):
         self.assertEqual(method, "GET")
         self.assertTrue(url.endswith("/projects/3"))
 
+    def test_projects_get_with_all_fields(self):
+        payload = {
+            "id": 10,
+            "sender_id": 77,
+            "name": "Marketing Site",
+            "website": "https://example.com",
+            "icon_url": "https://example.com/icon.png",
+            "badge_url": "https://example.com/badge.png",
+            "notifications_ttl": 3600,
+            "notifications_require_interaction": True,
+            "notifications_silent": False,
+            "created_at": "2025-09-14T10:30:00.123Z",
+        }
+        response = make_response(payload=payload)
+        client, _ = make_client(self.token, response=response)
+        project = client.projects.get(payload["id"])
+        self.assertEqual(project.id, payload["id"])
+        self.assertEqual(project.sender_id, payload["sender_id"])
+        self.assertEqual(project.name, payload["name"])
+        self.assertEqual(project.website, payload["website"])
+        self.assertEqual(project.icon_url, payload["icon_url"])
+        self.assertEqual(project.badge_url, payload["badge_url"])
+        self.assertEqual(project.notifications_ttl, payload["notifications_ttl"])
+        self.assertEqual(
+            project.notifications_require_interaction,
+            payload["notifications_require_interaction"],
+        )
+        self.assertEqual(project.notifications_silent, payload["notifications_silent"])
+        self.assertEqual(project.created_at, payload["created_at"])
+
     def test_projects_update(self):
         response = make_response(payload={"id": 4, "name": "Demo"})
         client, session = make_client(self.token, response=response)

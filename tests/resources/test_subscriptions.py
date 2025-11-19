@@ -44,6 +44,31 @@ class SubscriptionsResourceTests(BasePushpadTestCase):
         self.assertEqual(method, "GET")
         self.assertTrue(url.endswith("/projects/1/subscriptions/22"))
 
+    def test_subscriptions_get_with_all_fields(self):
+        payload = {
+            "id": 50,
+            "project_id": 1,
+            "endpoint": "https://push.example.com/push/abcdef",
+            "p256dh": "BAbcd123",
+            "auth": "abcd==",
+            "uid": "user-42",
+            "tags": ["tagA", "tagB"],
+            "last_click_at": "2025-09-15T11:00:00.123Z",
+            "created_at": "2025-09-15T10:30:00.123Z",
+        }
+        response = make_response(payload=payload)
+        client, _ = make_client(self.token, self.project_id, response)
+        subscription = client.subscriptions.get(payload["id"])
+        self.assertEqual(subscription.id, payload["id"])
+        self.assertEqual(subscription.project_id, payload["project_id"])
+        self.assertEqual(subscription.endpoint, payload["endpoint"])
+        self.assertEqual(subscription.p256dh, payload["p256dh"])
+        self.assertEqual(subscription.auth, payload["auth"])
+        self.assertEqual(subscription.uid, payload["uid"])
+        self.assertEqual(subscription.tags, payload["tags"])
+        self.assertEqual(subscription.last_click_at, payload["last_click_at"])
+        self.assertEqual(subscription.created_at, payload["created_at"])
+
     def test_subscriptions_update(self):
         response = make_response(payload={"id": 33, "tags": ["a"]})
         client, session = make_client(self.token, self.project_id, response)

@@ -32,6 +32,23 @@ class SendersResourceTests(BasePushpadTestCase):
         self.assertEqual(method, "GET")
         self.assertTrue(url.endswith("/senders/3"))
 
+    def test_senders_get_with_all_fields(self):
+        payload = {
+            "id": 11,
+            "name": "My Sender 1",
+            "vapid_private_key": "-----BEGIN EC PRIVATE KEY----- ...",
+            "vapid_public_key": "-----BEGIN PUBLIC KEY----- ...",
+            "created_at": "2025-09-13T10:30:00.123Z",
+        }
+        response = make_response(payload=payload)
+        client, _ = make_client(self.token, response=response)
+        sender = client.senders.get(payload["id"])
+        self.assertEqual(sender.id, payload["id"])
+        self.assertEqual(sender.name, payload["name"])
+        self.assertEqual(sender.vapid_private_key, payload["vapid_private_key"])
+        self.assertEqual(sender.vapid_public_key, payload["vapid_public_key"])
+        self.assertEqual(sender.created_at, payload["created_at"])
+
     def test_senders_update(self):
         response = make_response(payload={"id": 55})
         client, session = make_client(self.token, response=response)
