@@ -15,5 +15,7 @@ class PushpadClientTests(BasePushpadTestCase):
     def test_error_response(self):
         response = make_response(status=403, payload={"error": "Forbidden"})
         client, _ = make_client(self.token, self.project_id, response)
-        with self.assertRaises(PushpadAPIError):
+        with self.assertRaises(PushpadAPIError) as ctx:
             client.notifications.all()
+        self.assertIn("API error: 403", str(ctx.exception))
+        self.assertIn("Forbidden", str(ctx.exception))
