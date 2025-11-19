@@ -6,16 +6,6 @@ from dataclasses import dataclass
 from typing import Any, Mapping
 
 
-def _to_str_list(values: Any) -> list[str] | None:
-    if values is None:
-        return None
-    if isinstance(values, list):
-        return [str(item) for item in values]
-    if isinstance(values, (tuple, set)):
-        return [str(item) for item in values]
-    return [str(values)]
-
-
 @dataclass
 class NotificationAction:
     title: str | None
@@ -55,7 +45,7 @@ class NotificationCreateResult:
         return cls(
             id=data.get("id"),
             scheduled=data.get("scheduled"),
-            uids=_to_str_list(data.get("uids")),
+            uids=data.get("uids"),
             send_at=data.get("send_at"),
         )
 
@@ -107,9 +97,9 @@ class Notification:
             actions=_to_actions(data.get("actions")),
             starred=data.get("starred"),
             send_at=data.get("send_at"),
-            custom_metrics=_to_str_list(data.get("custom_metrics")) or [],
-            uids=_to_str_list(data.get("uids")),
-            tags=_to_str_list(data.get("tags")),
+            custom_metrics=data.get("custom_metrics"),
+            uids=data.get("uids"),
+            tags=data.get("tags"),
             created_at=data.get("created_at"),
             successfully_sent_count=data.get("successfully_sent_count"),
             opened_count=data.get("opened_count"),
@@ -127,7 +117,7 @@ class Subscription:
     p256dh: str | None
     auth: str | None
     uid: str | None
-    tags: list[str]
+    tags: list[str] | None
     last_click_at: str | None
     created_at: str
 
@@ -140,7 +130,7 @@ class Subscription:
             p256dh=data.get("p256dh"),
             auth=data.get("auth"),
             uid=data.get("uid"),
-            tags=_to_str_list(data.get("tags")) or [],
+            tags=data.get("tags"),
             last_click_at=data.get("last_click_at"),
             created_at=data.get("created_at"),
         )
