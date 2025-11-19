@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import Any, Dict, Iterable, Optional, TYPE_CHECKING
 
-from .._sentinel import _MISSING, _MissingType, remove_missing
+from .._sentinel import _MISSING, _Missing, remove_missing
 from ..pushpad import _ensure_api_list, _ensure_api_object
 from ..types import Subscription
 
@@ -75,10 +75,10 @@ class SubscriptionsResource:
         self,
         *,
         endpoint: str,
-        p256dh: str | _MissingType = _MISSING,
-        auth: str | _MissingType = _MISSING,
-        uid: str | None | _MissingType = _MISSING,
-        tags: Iterable[str] | _MissingType = _MISSING,
+        p256dh: str | _Missing = _MISSING,
+        auth: str | _Missing = _MISSING,
+        uid: str | None | _Missing = _MISSING,
+        tags: Iterable[str] | _Missing = _MISSING,
         project_id: Optional[int] = None,
     ) -> Subscription:
         pid = self._client._resolve_project_id(project_id)
@@ -105,8 +105,8 @@ class SubscriptionsResource:
         self,
         id: int,
         *,
-        uid: str | None | _MissingType = _MISSING,
-        tags: Iterable[str] | _MissingType = _MISSING,
+        uid: str | None | _Missing = _MISSING,
+        tags: Iterable[str] | _Missing = _MISSING,
         project_id: Optional[int] = None,
     ) -> Subscription:
         if id is None:

@@ -5,7 +5,7 @@ from __future__ import annotations
 from datetime import datetime
 from typing import Iterable, Mapping, Optional, TYPE_CHECKING
 
-from .._sentinel import _MISSING, _MissingType, remove_missing
+from .._sentinel import _MISSING, _Missing, remove_missing
 from ..pushpad import _ensure_api_list, _ensure_api_object
 from ..types import Notification, NotificationCreateResult
 
@@ -33,22 +33,22 @@ class NotificationsResource:
         self,
         *,
         body: str,
-        title: str | _MissingType = _MISSING,
-        target_url: str | _MissingType = _MISSING,
-        icon_url: str | _MissingType = _MISSING,
-        badge_url: str | _MissingType = _MISSING,
-        image_url: str | _MissingType = _MISSING,
-        ttl: int | _MissingType = _MISSING,
-        require_interaction: bool | _MissingType = _MISSING,
-        silent: bool | _MissingType = _MISSING,
-        urgent: bool | _MissingType = _MISSING,
-        custom_data: str | _MissingType = _MISSING,
-        actions: Iterable[Mapping[str, str]] | _MissingType = _MISSING,
-        starred: bool | _MissingType = _MISSING,
-        send_at: datetime | str | _MissingType = _MISSING,
-        custom_metrics: Iterable[str] | _MissingType = _MISSING,
-        uids: Iterable[str] | _MissingType = _MISSING,
-        tags: Iterable[str] | _MissingType = _MISSING,
+        title: str | _Missing = _MISSING,
+        target_url: str | _Missing = _MISSING,
+        icon_url: str | _Missing = _MISSING,
+        badge_url: str | _Missing = _MISSING,
+        image_url: str | _Missing = _MISSING,
+        ttl: int | _Missing = _MISSING,
+        require_interaction: bool | _Missing = _MISSING,
+        silent: bool | _Missing = _MISSING,
+        urgent: bool | _Missing = _MISSING,
+        custom_data: str | _Missing = _MISSING,
+        actions: Iterable[Mapping[str, str]] | _Missing = _MISSING,
+        starred: bool | _Missing = _MISSING,
+        send_at: datetime | str | _Missing = _MISSING,
+        custom_metrics: Iterable[str] | _Missing = _MISSING,
+        uids: Iterable[str] | _Missing = _MISSING,
+        tags: Iterable[str] | _Missing = _MISSING,
         project_id: Optional[int] = None,
     ) -> NotificationCreateResult:
         pid = self._client._resolve_project_id(project_id)

@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import Any, TYPE_CHECKING
 
-from .._sentinel import _MISSING, _MissingType, remove_missing
+from .._sentinel import _MISSING, _Missing, remove_missing
 from ..pushpad import _ensure_api_list, _ensure_api_object
 from ..types import Sender
 
@@ -25,8 +25,8 @@ class SendersResource:
         self,
         *,
         name: str,
-        vapid_private_key: str | _MissingType = _MISSING,
-        vapid_public_key: str | _MissingType = _MISSING,
+        vapid_private_key: str | _Missing = _MISSING,
+        vapid_public_key: str | _Missing = _MISSING,
     ) -> Sender:
         payload = remove_missing(
             name=name,
@@ -48,7 +48,7 @@ class SendersResource:
         self,
         id: int,
         *,
-        name: str | _MissingType = _MISSING,
+        name: str | _Missing = _MISSING,
     ) -> Sender:
         if id is None:
             raise ValueError("id is required")
