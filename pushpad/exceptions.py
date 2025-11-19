@@ -23,11 +23,12 @@ class PushpadAPIError(PushpadError):
     def __init__(
         self,
         status_code: int,
-        message: Optional[str] = None,
         *,
-        response_body: Optional[Any] = None,
+        reason: Optional[str] = None,
+        response_body: Optional[str] = None,
     ) -> None:
-        msg = message or f"Pushpad API error (status_code={status_code})"
+        msg = f"API error: {status_code} {reason}: {response_body}"
         super().__init__(msg)
         self.status_code = status_code
+        self.reason = reason
         self.response_body = response_body

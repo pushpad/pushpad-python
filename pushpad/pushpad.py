@@ -169,16 +169,7 @@ class Pushpad:
             raise PushpadClientError(str(exc), original_exception=exc) from exc
 
         if response.status_code >= 400:
-            message: Optional[str] = None
-            payload: Optional[Any] = None
-            try:
-                payload = response.json()
-                if isinstance(payload, dict):
-                    message = payload.get("error") or payload.get("message")
-            except ValueError:
-                if response.text:
-                    message = response.text
-            raise PushpadAPIError(response.status_code, message, response_body=payload or response.text)
+            raise PushpadAPIError(response.status_code, reason=response.reason, response_body=response.text)
 
         return response
 
@@ -197,5 +188,5 @@ class Pushpad:
         try:
             data = response.json()
         except ValueError as exc:  # pragma: no cover - unexpected API behaviour
-            raise PushpadAPIError(response.status_code, "Invalid JSON in response") from exc
+            raise PushpadClientError("Invalid JSON in response", original_exception=exc) from exc
         return _wrap_response(data)
