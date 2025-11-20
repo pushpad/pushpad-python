@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Any, Dict, Iterable, Optional, TYPE_CHECKING
+from typing import Any, Dict, Optional, TYPE_CHECKING
 
 from .._sentinel import _MISSING, _Missing, remove_missing
 from ..types import Subscription
@@ -20,7 +20,7 @@ class SubscriptionsResource:
         uids = params.pop("uids", None)
         tags = params.pop("tags", None)
 
-        def _normalize(value: Optional[Iterable[str]]):
+        def _normalize(value: Optional[list[str]]):
             if value is None:
                 return None
             if isinstance(value, (list, tuple, set)):
@@ -40,8 +40,8 @@ class SubscriptionsResource:
         *,
         page: Optional[int] = None,
         per_page: Optional[int] = None,
-        uids: Optional[Iterable[str]] = None,
-        tags: Optional[Iterable[str]] = None,
+        uids: Optional[list[str]] = None,
+        tags: Optional[list[str]] = None,
         project_id: Optional[int] = None,
     ) -> list[Subscription]:
         pid = self._client._resolve_project_id(project_id)
@@ -52,8 +52,8 @@ class SubscriptionsResource:
     def count(
         self,
         *,
-        uids: Optional[Iterable[str]] = None,
-        tags: Optional[Iterable[str]] = None,
+        uids: Optional[list[str]] = None,
+        tags: Optional[list[str]] = None,
         project_id: Optional[int] = None,
     ) -> int:
         pid = self._client._resolve_project_id(project_id)
@@ -76,7 +76,7 @@ class SubscriptionsResource:
         p256dh: str | _Missing = _MISSING,
         auth: str | _Missing = _MISSING,
         uid: str | None | _Missing = _MISSING,
-        tags: Iterable[str] | _Missing = _MISSING,
+        tags: list[str] | _Missing = _MISSING,
         project_id: Optional[int] = None,
     ) -> Subscription:
         pid = self._client._resolve_project_id(project_id)
@@ -102,7 +102,7 @@ class SubscriptionsResource:
         id: int,
         *,
         uid: str | None | _Missing = _MISSING,
-        tags: Iterable[str] | _Missing = _MISSING,
+        tags: list[str] | _Missing = _MISSING,
         project_id: Optional[int] = None,
     ) -> Subscription:
         if id is None:

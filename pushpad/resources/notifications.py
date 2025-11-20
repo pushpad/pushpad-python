@@ -44,9 +44,9 @@ class NotificationsResource:
         actions: Iterable[Mapping[str, str]] | _Missing = _MISSING,
         starred: bool | _Missing = _MISSING,
         send_at: datetime | str | _Missing = _MISSING,
-        custom_metrics: Iterable[str] | _Missing = _MISSING,
-        uids: Iterable[str] | _Missing = _MISSING,
-        tags: Iterable[str] | _Missing = _MISSING,
+        custom_metrics: list[str] | _Missing = _MISSING,
+        uids: list[str] | _Missing = _MISSING,
+        tags: list[str] | _Missing = _MISSING,
         project_id: Optional[int] = None,
     ) -> NotificationCreateResult:
         pid = self._client._resolve_project_id(project_id)
