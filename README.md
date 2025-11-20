@@ -21,9 +21,9 @@ First you need to sign up to Pushpad and create a project there.
 Then set your authentication credentials and project:
 
 ```python
-import pushpad
+from pushpad import Pushpad
 
-client = pushpad.Pushpad(auth_token='5374d7dfeffa2eb49965624ba7596a09', project_id=123)
+client = Pushpad(auth_token='token', project_id=123)
 ```
 
 - `auth_token` can be found in the user account settings. 
