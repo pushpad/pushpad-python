@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from tests.helpers import BasePushpadTestCase, make_client, make_response
+from ..helpers import BasePushpadTestCase, make_client, make_response
 
 
 class SubscriptionsResourceTests(BasePushpadTestCase):
