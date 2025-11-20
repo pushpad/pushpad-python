@@ -15,41 +15,7 @@ from .exceptions import PushpadAPIError, PushpadClientError
 JSONDict = MutableMapping[str, Any]
 
 
-class APIObject(dict):
-    """Dictionary that also exposes keys as attributes."""
-
-    def __getattr__(self, item: str) -> Any:
-        try:
-            return self[item]
-        except KeyError as exc:  # pragma: no cover - defensive
-            raise AttributeError(item) from exc
-
-
-APIResponse = Union[APIObject, list[APIObject], None]
-
-
-def _wrap_response(data: Any) -> Any:
-    if isinstance(data, dict):
-        return APIObject({key: _wrap_response(value) for key, value in data.items()})
-    if isinstance(data, list):
-        return [_wrap_response(item) for item in data]
-    return data
-
-
-def _ensure_api_object(data: APIResponse) -> APIObject:
-    if isinstance(data, APIObject):
-        return data
-    raise PushpadClientError(f"API response is not an object: {type(data).__name__}")
-
-
-def _ensure_api_list(data: APIResponse) -> list[APIObject]:
-    if data is None:
-        return []
-    if isinstance(data, list):
-        if all(isinstance(item, APIObject) for item in data):
-            return data
-        raise PushpadClientError("API response list contains invalid entries")
-    raise PushpadClientError(f"API response is not a list: {type(data).__name__}")
+APIResponse = Union[Dict[str, Any], list[Dict[str, Any]], None]
 
 
 from .resources import NotificationsResource, ProjectsResource, SendersResource, SubscriptionsResource
@@ -156,4 +122,4 @@ class Pushpad:
             data = response.json()
         except ValueError as exc:  # pragma: no cover - unexpected API behaviour
             raise PushpadClientError("Invalid JSON in response", original_exception=exc) from exc
-        return _wrap_response(data)
+        return data

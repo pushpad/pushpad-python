@@ -2,10 +2,9 @@
 
 from __future__ import annotations
 
-from typing import Any, TYPE_CHECKING
+from typing import TYPE_CHECKING
 
 from .._sentinel import _MISSING, _Missing, remove_missing
-from ..pushpad import _ensure_api_list, _ensure_api_object
 from ..types import Project
 
 if TYPE_CHECKING:  # pragma: no cover - only used for typing
@@ -18,8 +17,7 @@ class ProjectsResource:
 
     def all(self) -> list[Project]:
         response = self._client._request("GET", "/projects")
-        payload = _ensure_api_list(response)
-        return [Project.from_api(item) for item in payload]
+        return [Project.from_api(item) for item in response]
 
     def create(
         self,
@@ -44,15 +42,13 @@ class ProjectsResource:
             notifications_silent=notifications_silent,
         )
         response = self._client._request("POST", "/projects", json=payload)
-        data = _ensure_api_object(response)
-        return Project.from_api(data)
+        return Project.from_api(response)
 
     def get(self, id: int) -> Project:
         if id is None:
             raise ValueError("id is required")
         response = self._client._request("GET", f"/projects/{id}")
-        payload = _ensure_api_object(response)
-        return Project.from_api(payload)
+        return Project.from_api(response)
 
     def update(
         self,
@@ -78,8 +74,7 @@ class ProjectsResource:
             notifications_silent=notifications_silent,
         )
         response = self._client._request("PATCH", f"/projects/{id}", json=payload)
-        data = _ensure_api_object(response)
-        return Project.from_api(data)
+        return Project.from_api(response)
 
     def delete(self, id: int) -> None:
         if id is None:

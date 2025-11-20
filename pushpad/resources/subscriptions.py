@@ -5,7 +5,6 @@ from __future__ import annotations
 from typing import Any, Dict, Iterable, Optional, TYPE_CHECKING
 
 from .._sentinel import _MISSING, _Missing, remove_missing
-from ..pushpad import _ensure_api_list, _ensure_api_object
 from ..types import Subscription
 
 if TYPE_CHECKING:  # pragma: no cover - only used for typing
@@ -48,8 +47,7 @@ class SubscriptionsResource:
         pid = self._client._resolve_project_id(project_id)
         params = self._build_filters({"page": page, "per_page": per_page, "uids": uids, "tags": tags})
         response = self._client._request("GET", f"/projects/{pid}/subscriptions", params=params)
-        payload = _ensure_api_list(response)
-        return [Subscription.from_api(item) for item in payload]
+        return [Subscription.from_api(item) for item in response]
 
     def count(
         self,
@@ -90,16 +88,14 @@ class SubscriptionsResource:
             tags=tags,
         )
         response = self._client._request("POST", f"/projects/{pid}/subscriptions", json=payload)
-        data = _ensure_api_object(response)
-        return Subscription.from_api(data)
+        return Subscription.from_api(response)
 
     def get(self, id: int, *, project_id: Optional[int] = None) -> Subscription:
         if id is None:
             raise ValueError("id is required")
         pid = self._client._resolve_project_id(project_id)
         response = self._client._request("GET", f"/projects/{pid}/subscriptions/{id}")
-        payload = _ensure_api_object(response)
-        return Subscription.from_api(payload)
+        return Subscription.from_api(response)
 
     def update(
         self,
@@ -117,8 +113,7 @@ class SubscriptionsResource:
             tags=tags,
         )
         response = self._client._request("PATCH", f"/projects/{pid}/subscriptions/{id}", json=payload)
-        data = _ensure_api_object(response)
-        return Subscription.from_api(data)
+        return Subscription.from_api(response)
 
     def delete(self, id: int, *, project_id: Optional[int] = None) -> None:
         if id is None:

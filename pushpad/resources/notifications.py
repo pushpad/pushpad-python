@@ -6,7 +6,6 @@ from datetime import datetime
 from typing import Iterable, Mapping, Optional, TYPE_CHECKING
 
 from .._sentinel import _MISSING, _Missing, remove_missing
-from ..pushpad import _ensure_api_list, _ensure_api_object
 from ..types import Notification, NotificationCreateResult
 
 if TYPE_CHECKING:  # pragma: no cover - only used for typing
@@ -26,8 +25,7 @@ class NotificationsResource:
         pid = self._client._resolve_project_id(project_id)
         params = {"page": page} if page is not None else None
         response = self._client._request("GET", f"/projects/{pid}/notifications", params=params)
-        payload = _ensure_api_list(response)
-        return [Notification.from_api(item) for item in payload]
+        return [Notification.from_api(item) for item in response]
 
     def create(
         self,
@@ -72,8 +70,7 @@ class NotificationsResource:
             tags=tags,
         )
         response = self._client._request("POST", f"/projects/{pid}/notifications", json=payload)
-        data = _ensure_api_object(response)
-        return NotificationCreateResult.from_api(data)
+        return NotificationCreateResult.from_api(response)
 
     send = create
 
@@ -81,8 +78,7 @@ class NotificationsResource:
         if id is None:
             raise ValueError("id is required")
         response = self._client._request("GET", f"/notifications/{id}")
-        payload = _ensure_api_object(response)
-        return Notification.from_api(payload)
+        return Notification.from_api(response)
 
     def cancel(self, id: int) -> None:
         if id is None:

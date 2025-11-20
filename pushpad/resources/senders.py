@@ -2,10 +2,9 @@
 
 from __future__ import annotations
 
-from typing import Any, TYPE_CHECKING
+from typing import TYPE_CHECKING
 
 from .._sentinel import _MISSING, _Missing, remove_missing
-from ..pushpad import _ensure_api_list, _ensure_api_object
 from ..types import Sender
 
 if TYPE_CHECKING:  # pragma: no cover - only used for typing
@@ -18,8 +17,7 @@ class SendersResource:
 
     def all(self) -> list[Sender]:
         response = self._client._request("GET", "/senders")
-        payload = _ensure_api_list(response)
-        return [Sender.from_api(item) for item in payload]
+        return [Sender.from_api(item) for item in response]
 
     def create(
         self,
@@ -34,15 +32,13 @@ class SendersResource:
             vapid_public_key=vapid_public_key,
         )
         response = self._client._request("POST", "/senders", json=payload)
-        data = _ensure_api_object(response)
-        return Sender.from_api(data)
+        return Sender.from_api(response)
 
     def get(self, id: int) -> Sender:
         if id is None:
             raise ValueError("id is required")
         response = self._client._request("GET", f"/senders/{id}")
-        payload = _ensure_api_object(response)
-        return Sender.from_api(payload)
+        return Sender.from_api(response)
 
     def update(
         self,
@@ -54,8 +50,7 @@ class SendersResource:
             raise ValueError("id is required")
         payload = remove_missing(name=name)
         response = self._client._request("PATCH", f"/senders/{id}", json=payload)
-        data = _ensure_api_object(response)
-        return Sender.from_api(data)
+        return Sender.from_api(response)
 
     def delete(self, id: int) -> None:
         if id is None:
