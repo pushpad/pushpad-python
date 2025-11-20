@@ -1,12 +1,123 @@
-# -*- coding: utf-8 -*-
-from hashlib import sha256
+"""High level Pushpad API client."""
+
+from __future__ import annotations
+
 import hmac
+from hashlib import sha256
+from typing import Any, Dict, MutableMapping, Optional, Union
+
+import requests
+from requests import RequestException, Response
+
+from ._version import __version__
+from .exceptions import PushpadAPIError, PushpadClientError
+from .resources import NotificationsResource, ProjectsResource, SendersResource, SubscriptionsResource
+
+JSONDict = MutableMapping[str, Any]
 
 
-class Pushpad(object):
-    def __init__(self, auth_token, project_id):
-        self.auth_token = auth_token
-        self.project_id = project_id
+APIResponse = Union[Dict[str, Any], list[Dict[str, Any]], None]
 
-    def signature_for(self, data):
-        return hmac.new(bytes(self.auth_token.encode()), data.encode(), sha256).hexdigest()
+
+class Pushpad:
+    """High level client used to interact with the Pushpad REST API."""
+
+    DEFAULT_BASE_URL = "https://pushpad.xyz/api/v1"
+
+    def __init__(
+        self,
+        auth_token: str,
+        project_id: Optional[int] = None,
+        *,
+        base_url: Optional[str] = None,
+        timeout: int = 30,
+        session: Optional[Any] = None,
+    ) -> None:
+        if not auth_token:
+            raise ValueError("auth_token is required")
+        self._auth_token = auth_token
+        self._project_id = project_id
+        self._base_url = (base_url or self.DEFAULT_BASE_URL).rstrip("/")
+        self._timeout = timeout
+        if session is not None:
+            self._session = session
+        else:
+            self._session = requests.Session()
+        self._session.headers.update(
+            {
+                "Authorization": f"Bearer {self._auth_token}",
+                "Accept": "application/json",
+                "Content-Type": "application/json",
+                "User-Agent": f"pushpad-python/{__version__}",
+            }
+        )
+
+        self.notifications = NotificationsResource(self)
+        self.subscriptions = SubscriptionsResource(self)
+        self.projects = ProjectsResource(self)
+        self.senders = SendersResource(self)
+
+    def __enter__(self) -> "Pushpad":
+        return self
+
+    def __exit__(self, exc_type, exc, exc_tb) -> None:
+        self.close()
+
+    def close(self) -> None:
+        """Close the underlying HTTP session."""
+        close = getattr(self._session, "close", None)
+        if callable(close):
+            close()
+
+    def signature_for(self, data: str) -> str:
+        """Return the HMAC signature for a user identifier."""
+        return hmac.new(self._auth_token.encode(), data.encode(), sha256).hexdigest()
+
+    def _resolve_project_id(self, project_id: Optional[int]) -> int:
+        pid = project_id if project_id is not None else self._project_id
+        if pid is None:
+            raise ValueError("project_id is required for this operation")
+        return pid
+
+    def _raw_request(
+        self,
+        method: str,
+        path: str,
+        *,
+        params: Optional[Dict[str, Any]] = None,
+        json: Optional[JSONDict] = None,
+    ) -> Response:
+        url = f"{self._base_url}{path}"
+        try:
+            response = self._session.request(
+                method,
+                url,
+                params=params,
+                json=json,
+                timeout=self._timeout,
+            )
+        except RequestException as exc:
+            raise PushpadClientError(str(exc), original_exception=exc) from exc
+
+        if response.status_code >= 400:
+            raise PushpadAPIError(response.status_code, reason=response.reason, response_body=response.text)
+
+        return response
+
+    def _request(
+        self,
+        method: str,
+        path: str,
+        *,
+        params: Optional[Dict[str, Any]] = None,
+        json: Optional[JSONDict] = None,
+    ) -> APIResponse:
+        response = self._raw_request(method, path, params=params, json=json)
+        if response.status_code in (202, 204) or not response.content:
+            return None
+
+        try:
+            data = response.json()
+        except ValueError as exc:  # pragma: no cover - unexpected API behaviour
+            raise PushpadClientError("Invalid JSON in response", original_exception=exc) from exc
+        return data

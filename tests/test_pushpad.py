@@ -1,32 +1,21 @@
 # -*- coding: utf-8 -*-
-import unittest
-import pushpad
+from pushpad import PushpadAPIError
+
+from tests.helpers import BasePushpadTestCase, make_client, make_response
 
 
-class TestPushpad(unittest.TestCase):
-    _test_token = '5374d7dfeffa2eb49965624ba7596a09'
-    _test_project_id = 123
+class PushpadClientTests(BasePushpadTestCase):
+    def test_signature_for(self):
+        client, _ = make_client(self.token, self.project_id)
+        self.assertEqual(
+            client.signature_for("user12345"),
+            "6627820dab00a1971f2a6d3ff16a5ad8ba4048a02b2d402820afc61aefd0b69f",
+        )
 
-    def test_instantiate(self):
-        """ pushpad can be instantiated"""
-
-        project = pushpad.Pushpad(self._test_token, self._test_project_id)
-        self.assertIsNotNone(project)
-
-    def test_set_token(self):
-        """ can change auth_token """
-        project = pushpad.Pushpad(self._test_token, self._test_project_id)
-        self.assertEqual(project.auth_token, self._test_token)
-
-    def test_set_project(self):
-        """ can change project_id """
-
-        project = pushpad.Pushpad(self._test_token, self._test_project_id)
-        self.assertEqual(project.project_id, self._test_project_id)
-
-    def test_get_signature(self):
-        data = "user12345"
-        data_sha1 = "6627820dab00a1971f2a6d3ff16a5ad8ba4048a02b2d402820afc61aefd0b69f"
-
-        project = pushpad.Pushpad(self._test_token, self._test_project_id)
-        self.assertEqual(project.signature_for(data), data_sha1)
+    def test_error_response(self):
+        response = make_response(status=403, payload={"error": "Forbidden"})
+        client, _ = make_client(self.token, self.project_id, response)
+        with self.assertRaises(PushpadAPIError) as ctx:
+            client.notifications.all()
+        self.assertIn("API error: 403", str(ctx.exception))
+        self.assertIn("Forbidden", str(ctx.exception))

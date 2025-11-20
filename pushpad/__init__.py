@@ -1,14 +1,20 @@
 # -*- coding: utf-8 -*-
+"""Public package interface."""
+
+from ._version import __version__
+from .exceptions import PushpadAPIError, PushpadClientError, PushpadError
 from .pushpad import Pushpad
-from .notification import Notification
+from .types import Notification, NotificationCreateResult, Project, Sender, Subscription
 
-class PushpadBaseException(BaseException):
-    """
-    Generic pushpad exception
-    """
-    def __init__(self, *args, **kwargs):
-        BaseException.__init__(self, *args, **kwargs)
-
-
-class NotificationDeliveryError(PushpadBaseException):
-    pass
+__all__ = [
+    "__version__",
+    "Pushpad",
+    "PushpadError",
+    "PushpadClientError",
+    "PushpadAPIError",
+    "Notification",
+    "NotificationCreateResult",
+    "Subscription",
+    "Project",
+    "Sender",
+]

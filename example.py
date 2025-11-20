@@ -1,29 +1,29 @@
 # -*- coding: utf-8 -*-
+"""Example usage of the Pushpad Python client."""
 
 import pushpad
 
-user1 = 'user1'
-user2 = 'user2'
-user3 = 'user3'
-users = [user1, user2, user3]
-tags = ['segment1', 'segment2']
+TOKEN = "5374d7dfeffa2eb49965624ba7596a09"
+PROJECT_ID = 123
 
-TOKEN='5374d7dfeffa2eb49965624ba7596a09'
-PROJ_ID=123
+client = pushpad.Pushpad(auth_token=TOKEN, project_id=PROJECT_ID)
 
-project = pushpad.Pushpad(TOKEN, PROJ_ID)
+print(f"HMAC signature for 'user1': {client.signature_for('user1')}")
 
-print("HMAC signature for the uid: %s is: %s" %(user1, project.signature_for(user1)))
-
-notification = pushpad.Notification(
-    project,
+created = client.notifications.create(
     body="Hello world!",
     title="Website Name",
-    target_url="https://example.com"
+    target_url="https://example.com",
+    uids=["user1", "user2", "user3"],
+    tags=["segment1", "segment2"],
 )
+print(f"Notification accepted with id: {created.id}")
 
-print("Send notification to user: %s\nResult: %s" % (user1, notification.deliver_to(user1)))
-print("Send notification to users: %s\nResult: %s" % (users, notification.deliver_to(users)))
-print("Send broadcast notification\nResult: %s" % notification.broadcast())
-print("Send notification to users: %s if they are tagged: %s \nResult: %s" % (users, tags, notification.deliver_to(users, tags=tags)))
-print("Send broadcast notification to segments: %s \nResult: %s" % (tags, notification.broadcast(tags=tags)))
+latest = client.notifications.all(page=1)
+print(f"Latest notifications: {latest}")
+
+subscriptions = client.subscriptions.all(per_page=5)
+print(f"First page of subscriptions: {subscriptions}")
+
+count = client.subscriptions.count(tags=["segment1 && !optout"])
+print(f"Subscribers in the filtered segment: {count}")
