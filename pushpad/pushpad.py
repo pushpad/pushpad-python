@@ -2,23 +2,21 @@
 
 from __future__ import annotations
 
-import requests
-from requests import RequestException, Response
-
 import hmac
 from hashlib import sha256
 from typing import Any, Dict, MutableMapping, Optional, Union
 
+import requests
+from requests import RequestException, Response
+
 from ._version import __version__
 from .exceptions import PushpadAPIError, PushpadClientError
+from .resources import NotificationsResource, ProjectsResource, SendersResource, SubscriptionsResource
 
 JSONDict = MutableMapping[str, Any]
 
 
 APIResponse = Union[Dict[str, Any], list[Dict[str, Any]], None]
-
-
-from .resources import NotificationsResource, ProjectsResource, SendersResource, SubscriptionsResource
 
 
 class Pushpad:
