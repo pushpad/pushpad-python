@@ -6,7 +6,6 @@ import requests
 from requests import RequestException, Response
 
 import hmac
-from datetime import date, datetime, timezone
 from hashlib import sha256
 from typing import Any, Dict, MutableMapping, Optional, Union
 
@@ -51,38 +50,6 @@ def _ensure_api_list(data: APIResponse) -> list[APIObject]:
             return data
         raise PushpadClientError("API response list contains invalid entries")
     raise PushpadClientError(f"API response is not a list: {type(data).__name__}")
-
-
-def _isoformat(value: datetime) -> str:
-    if value.tzinfo is None:
-        value = value.replace(tzinfo=timezone.utc)
-    return value.astimezone(timezone.utc).isoformat().replace("+00:00", "Z")
-
-
-def _serialize_value(value: Any) -> Any:
-    if isinstance(value, datetime):
-        return _isoformat(value)
-    if isinstance(value, date):
-        return value.isoformat()
-    if isinstance(value, dict):
-        return {key: _serialize_value(val) for key, val in value.items()}
-    if isinstance(value, (list, tuple, set)):
-        return [_serialize_value(item) for item in value]
-    return value
-
-
-def _prepare_payload(data: Optional[JSONDict]) -> Optional[JSONDict]:
-    if not data:
-        return None
-    return _serialize_value(dict(data))  # type: ignore[arg-type]
-
-
-def _prepare_params(params: Optional[Dict[str, Any]]) -> Optional[Dict[str, Any]]:
-    if not params:
-        return None
-    serialized = _serialize_value(dict(params))
-    assert isinstance(serialized, dict)
-    return serialized  # type: ignore[return-value]
 
 
 from .resources import NotificationsResource, ProjectsResource, SendersResource, SubscriptionsResource
@@ -161,8 +128,8 @@ class Pushpad:
             response = self._session.request(
                 method,
                 url,
-                params=_prepare_params(params),
-                json=_prepare_payload(json),
+                params=params,
+                json=json,
                 timeout=self._timeout,
             )
         except RequestException as exc:
