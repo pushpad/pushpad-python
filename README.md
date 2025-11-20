@@ -98,7 +98,7 @@ result = client.notifications.create(
 
     # optional, use this option only if you need to create scheduled notifications (max 5 days)
     # see https://pushpad.xyz/docs/schedule_notifications
-    send_at=datetime.datetime(2016, 7, 25, 10, 9, 0, 0), # use UTC
+    send_at=datetime.datetime(2025, 11, 20, 23, 15, 0, 0).isoformat(),
 
     # optional, add the notification to custom categories for stats aggregation
     # see https://pushpad.xyz/docs/monitoring
