@@ -4,7 +4,8 @@ version = "2.0.0"
 readme = "README.md"
 description = "Pushpad API: web push notifications"
 authors = [{ name = "Pushpad", email = "support@pushpad.xyz" }]
-license = { text = "MIT" }
+license = "MIT"
+license-files = ["LICENSE.txt"]
 keywords = ["pushpad", "api", "web", "push", "notifications"]
 requires-python = ">=3.10"
 classifiers = [
