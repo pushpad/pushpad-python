@@ -1,5 +1,6 @@
 # Pushpad - Web Push Notifications
 
+[![pypi](https://img.shields.io/pypi/v/pushpad.svg)](https://pypi.python.org/pypi/pushpad)
 ![Build Status](https://github.com/pushpad/pushpad-python/workflows/CI/badge.svg)
  
 [Pushpad](https://pushpad.xyz) is a service for sending push notifications from websites and web apps. It uses the **Push API**, which is a standard supported by all major browsers (Chrome, Firefox, Opera, Edge, Safari).
