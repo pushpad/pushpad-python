@@ -217,7 +217,7 @@ import datetime
 
 scheduled = client.notifications.create(
   body="This notification will be sent after 60 seconds",
-  send_at=(datetime.datetime.utcnow() + datetime.timedelta(seconds=60)).isoformat()
+  send_at=(datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(seconds=60)).isoformat()
 )
 ```
 
