@@ -25,3 +25,7 @@ dependencies = ["requests"]
 [project.urls]
 homepage = "https://pushpad.xyz"
 source = "https://github.com/pushpad/pushpad-python"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
